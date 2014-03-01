@@ -8,7 +8,7 @@ package medicalimaging;
 
 /**
  *
- * @author Alfonso
+ * @author Kaleb
  */
 public class ImageViewer extends javax.swing.JFrame {
 
@@ -86,6 +86,7 @@ public class ImageViewer extends javax.swing.JFrame {
 
     private void displayStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayStateActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_displayStateActionPerformed
 
     /**
