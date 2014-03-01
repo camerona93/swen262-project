@@ -27,15 +27,7 @@ public class SystemController {
     
     /* Loading serialized studies from disk. */
     private static void loadStudies() {
-        String[] directoryList = new File(STUDY_PATH).list();
-        
-        studies.clear();
-        
-        for (String f : directoryList) {
-            studies.add(deserializeStudy(f));
-        }
-        
-        System.out.println(studies);
+
     }
     
     private static void saveStudies() {

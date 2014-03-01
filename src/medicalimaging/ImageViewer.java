@@ -11,6 +11,7 @@ package medicalimaging;
  * @author Kaleb
  */
 public class ImageViewer extends javax.swing.JFrame {
+    private DisplayState state = new DisplayState();
 
     /**
      * Creates new form ImageViewer
@@ -85,8 +86,9 @@ public class ImageViewer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void displayStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayStateActionPerformed
-        // TODO add your handling code here:
-        
+        state.changeState();
+        displayState.setText(state.toString());
+        displayState.setSelected(!displayState.isSelected());
     }//GEN-LAST:event_displayStateActionPerformed
 
     /**

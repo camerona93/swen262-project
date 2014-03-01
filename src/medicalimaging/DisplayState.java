@@ -30,7 +30,7 @@ public class DisplayState {
         if(this.currState == "single"){
             this.currState = "fourup";
         }
-        else {
+        else if(this.currState == "fourup"){
             this.currState = "single";
         }
     }
