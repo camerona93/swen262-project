@@ -8,9 +8,6 @@ package medicalimaging;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,8 +20,12 @@ public class SystemController {
     
     public static void main(String[] args) {
         loadStudies();
+        Study newStudy = new Study("study1.std");
+        studies.add(newStudy);
+        saveStudies();
     }
     
+    /* Loading serialized studies from disk. */
     private static void loadStudies() {
         String[] directoryList = new File(STUDY_PATH).list();
         
@@ -35,6 +36,12 @@ public class SystemController {
         }
         
         System.out.println(studies);
+    }
+    
+    private static void saveStudies() {
+        for (Study s : studies) {
+            serializeStudy(s);
+        }
     }
     
     private static Study deserializeStudy(String studyName) {
@@ -53,5 +60,17 @@ public class SystemController {
             }
         
         return s;
+    }
+    
+    private static void serializeStudy(Study study){ 
+        try (
+            OutputStream file = new FileOutputStream(STUDY_PATH.concat(study.name));
+            OutputStream buffer = new BufferedOutputStream(file);
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            ){
+                output.writeObject(study);
+            }  
+        catch(IOException ex){
+        }
     }
 }
