@@ -34,6 +34,12 @@ public class SystemController {
         for (Study s : studies) {
             serializeStudy(s);
         }
+        //String path = "";
+        //StudyLoader loader = new LocalStudyLoader(path);
+        //Study loadedStudy = loader.execute();
+        //System.out.println(loadedStudy);
+     
+        System.out.println(studies);
     }
     
     private static Study deserializeStudy(String studyName) {
