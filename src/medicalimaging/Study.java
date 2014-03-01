@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author ericlee
  */
-public class Study {
+public class Study implements java.io.Serializable {
     private ArrayList<MedicalImage> images;
     protected String name;
     
