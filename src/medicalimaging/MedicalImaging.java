@@ -16,15 +16,16 @@ public class MedicalImaging {
     /**
      * @param args the command line arguments
      */
-<<<<<<< HEAD
+
     public static void main(String[] args) {
         ImageViewer view = new ImageViewer();
         view.show();
         /*Scanner scan = new Scanner(System.in);
-=======
+        */
+    }
+
     /*public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
->>>>>>> FETCH_HEAD
         
         System.out.println("Enter the path to study:");
         
@@ -33,11 +34,9 @@ public class MedicalImaging {
         
         Study loadedStudy = loader.execute();
         System.out.println(loadedStudy);
-<<<<<<< HEAD
-                */
+                
     }
-=======
+
     }*/
->>>>>>> FETCH_HEAD
     
 }
