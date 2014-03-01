@@ -6,11 +6,11 @@
 
 package medicalimaging;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,32 +18,40 @@ import java.util.ArrayList;
  */
 public class SystemController {
     
-    protected ArrayList<Study> studies = new ArrayList<Study>();
+    protected static final String STUDY_PATH = new File("").getAbsolutePath().concat("\\Studies\\");
+    protected static ArrayList<Study> studies = new ArrayList<>();
     
     public static void main(String[] args) {
+        loadStudies();
+    }
+    
+    private static void loadStudies() {
+        String[] directoryList = new File(STUDY_PATH).list();
         
-        Study study1 = new Study("test");
+        studies.clear();
         
-        try {
-            String path = new File("").getAbsolutePath().concat("\\Studies\\study1.std");
-            System.out.println(path);
-            File file1 = new File(path);
-            if ( ! file1.exists() ) {
-                file1.createNewFile();
-            }
-            FileOutputStream fileOut = new FileOutputStream(path);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(study1);
-            out.close();
-            fileOut.close();
-        } catch (IOException i) {
-            i.printStackTrace();
+        for (String f : directoryList) {
+            studies.add(deserializeStudy(f));
         }
         
-        //String path = "";
-        //StudyLoader loader = new LocalStudyLoader(path);
-        //Study loadedStudy = loader.execute();
-        //System.out.println(loadedStudy);
-           
+        System.out.println(studies);
+    }
+    
+    private static Study deserializeStudy(String studyName) {
+        Study s = null;
+        
+        try(
+            InputStream file = new FileInputStream(STUDY_PATH.concat(studyName));
+            InputStream buffer = new BufferedInputStream(file);
+            ObjectInput input = new ObjectInputStream (buffer);
+            ){
+                s = (Study)input.readObject();
+            }
+            catch(ClassNotFoundException ex){
+            }
+            catch(IOException ex){
+            }
+        
+        return s;
     }
 }
