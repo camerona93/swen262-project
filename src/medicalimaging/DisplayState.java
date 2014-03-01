@@ -8,8 +8,39 @@ package medicalimaging;
 
 /**
  *
- * @author Alfonso
+ * @author Kaleb
  */
 public class DisplayState {
+    // single vs fourup
+    private String currState;
     
+    public DisplayState(){
+        this.currState = "single";
+    }
+    
+    public DisplayState(String state){
+       this.currState = state;
+    }
+    
+    public String getCurrState(){
+        return this.currState;
+    }
+    
+    public void changeState(){
+        if(this.currState == "single"){
+            this.currState = "fourup";
+        }
+        else {
+            this.currState = "single";
+        }
+    }
+    
+    public String toString(){
+        if(this.currState == "single"){
+            return "Single View";
+        }
+        else{
+            return "Four by Four";
+        }
+    }
 }
