@@ -17,7 +17,9 @@ public class MedicalImaging {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
+        ImageViewer view = new ImageViewer();
+        view.show();
+        /*Scanner scan = new Scanner(System.in);
         
         System.out.println("Enter the path to study:");
         
@@ -26,6 +28,7 @@ public class MedicalImaging {
         
         Study loadedStudy = loader.execute();
         System.out.println(loadedStudy);
+                */
     }
     
 }
