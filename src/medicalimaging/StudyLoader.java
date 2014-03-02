@@ -11,5 +11,5 @@ package medicalimaging;
  * @author ericlee
  */
 public interface StudyLoader {
-    public Study execute();
+    public StudyIterator execute();
 }

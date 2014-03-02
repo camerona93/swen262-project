@@ -27,7 +27,8 @@ public class SystemController {
     
     /* Loading serialized studies from disk. */
     private static void loadStudies() {
-
+        System.out.println("Enter the study path: ");
+        
     }
     
     private static void saveStudies() {

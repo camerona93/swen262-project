@@ -19,7 +19,7 @@ public class LocalStudyLoader implements StudyLoader{
         this.loadPath = loadPath;
     }
     
-    public Study execute() {
+    public StudyIterator execute() {
         File rootDir = new File(loadPath);
         File[] subFiles = rootDir.listFiles();
         Study returnStudy = new Study(rootDir.getName());
@@ -30,7 +30,10 @@ public class LocalStudyLoader implements StudyLoader{
                 returnStudy.addImage(new MedicalImage(currentFile.getAbsolutePath()));
             }
         }
-        return returnStudy;
+        
+        StudyIterator studyIter = new SingleIterator(returnStudy);
+        return studyIter;
+        
     }
     
     private boolean fileSupported(File file) {

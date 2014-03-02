@@ -5,7 +5,10 @@
  */
 
 package medicalimaging;
+import java.awt.Image;
+import java.io.File;
 import java.util.ArrayList;
+
 
 /**
  *
@@ -14,6 +17,8 @@ import java.util.ArrayList;
 public class Study implements java.io.Serializable {
     private ArrayList<MedicalImage> images;
     protected String name;
+    private File studyPath;
+    private StudyIterator studyIter;
     
     public Study(String name) {
         this.name = name;
@@ -28,6 +33,10 @@ public class Study implements java.io.Serializable {
         if(index < this.getImageCount())
             return this.images.get(index);
         return null;
+    }
+    
+    public ArrayList<MedicalImage> getImages(){
+        return this.images;
     }
     
     public void removeImage(int index) {
@@ -46,4 +55,5 @@ public class Study implements java.io.Serializable {
         }
         return returnString;
     }
+    
 }
