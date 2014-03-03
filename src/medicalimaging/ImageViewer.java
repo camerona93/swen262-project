@@ -35,8 +35,8 @@ public class ImageViewer extends javax.swing.JFrame {
     
     public ImageViewer(String loadPath){
         StartUpInput start = new StartUpInput(this, true);
-        StudyLoader studyLoader = new LocalStudyLoader(loadPath);
-        StudyIterator studyIter = studyLoader.execute();
+        studyLoader = new LocalStudyLoader(loadPath);
+        studyIter = studyLoader.execute();
         initComponents(loadPath);
         addImages();
     }
