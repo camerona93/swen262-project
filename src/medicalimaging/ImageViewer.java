@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.io.File;
 
 /**
  *
@@ -20,11 +21,14 @@ public class ImageViewer extends javax.swing.JFrame {
     private Study study;
     private StudyIterator studyIter;
     private StudyLoader studyLoader;
+    private String loadPath;
 
     /**
      * Creates new form ImageViewer
      */
     public ImageViewer() {
+        StartUpInput start = new StartUpInput(this, true);
+        start.show();
         initComponents();
     }
     
@@ -32,8 +36,8 @@ public class ImageViewer extends javax.swing.JFrame {
         studyIter = studyLoader.execute();
         Image[] images = studyIter.getImages();
         
-        this.jLabel1.setIcon(new ImageIcon(images[0]));
-        this.jLabel1.setText("");
+        this.imageLabel.setIcon(new ImageIcon(images[0]));
+        this.imageLabel.setText("");
         /**
         for (int i=0; i<4; i++){
             if (images[i] == null){
@@ -59,34 +63,36 @@ public class ImageViewer extends javax.swing.JFrame {
     private void initComponents() {
 
         imagePanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        imageLabel = new javax.swing.JLabel();
         studyName = new javax.swing.JLabel();
         displayState = new javax.swing.JToggleButton();
-        jButton1 = new javax.swing.JButton();
+        directoryPanel = new javax.swing.JPanel();
+        directoryName = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        directoryList = new javax.swing.JList();
+        directoryButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(500, 600));
+        setPreferredSize(new java.awt.Dimension(500, 350));
 
-        jLabel1.setText("jLabel1");
+        imageLabel.setText("Picture goes here");
 
         javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 119, Short.MAX_VALUE)
-            .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(imagePanelLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(imagePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addContainerGap())
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 241, Short.MAX_VALUE)
-            .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(imagePanelLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(imagePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(imageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         studyName.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
@@ -99,10 +105,41 @@ public class ImageViewer extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        directoryName.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        directoryName.setText("Directory");
+
+        directoryList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "llama.jpg", "cat.jpg", "elephant.jpg", "example.jpg", "..." };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(directoryList);
+
+        javax.swing.GroupLayout directoryPanelLayout = new javax.swing.GroupLayout(directoryPanel);
+        directoryPanel.setLayout(directoryPanelLayout);
+        directoryPanelLayout.setHorizontalGroup(
+            directoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(directoryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(directoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(directoryName))
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+        directoryPanelLayout.setVerticalGroup(
+            directoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(directoryPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(directoryName)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        directoryButton.setText("View Study");
+        directoryButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                directoryButtonActionPerformed(evt);
             }
         });
 
@@ -111,33 +148,34 @@ public class ImageViewer extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(studyName, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1422, 1422, 1422))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(displayState)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addGap(308, 308, 308)
-                .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(displayState))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(directoryButton)
+                            .addComponent(directoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(studyName, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(studyName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(displayState)
-                            .addComponent(jButton1)))))
+                    .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(directoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(displayState)
+                    .addComponent(directoryButton)))
         );
 
         pack();
@@ -149,9 +187,12 @@ public class ImageViewer extends javax.swing.JFrame {
         displayState.setSelected(!displayState.isSelected());
     }//GEN-LAST:event_displayStateActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void directoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_directoryButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if(directoryList.getSelectedIndex() >= 0){
+            MedicalImage imageSelected = (MedicalImage)directoryList.getSelectedValue();
+        }
+    }//GEN-LAST:event_directoryButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -189,10 +230,14 @@ public class ImageViewer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton directoryButton;
+    private javax.swing.JList directoryList;
+    private javax.swing.JLabel directoryName;
+    private javax.swing.JPanel directoryPanel;
     private javax.swing.JToggleButton displayState;
+    private javax.swing.JLabel imageLabel;
     private javax.swing.JPanel imagePanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel studyName;
     // End of variables declaration//GEN-END:variables
 }

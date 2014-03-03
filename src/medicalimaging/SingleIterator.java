@@ -45,6 +45,7 @@ public class SingleIterator implements StudyIterator {
         }
         this.index = index;
     }
+    
     @Override
     public boolean next(){
         if (index == images.size()-1){
@@ -53,6 +54,7 @@ public class SingleIterator implements StudyIterator {
         index++;
         return true;
     }
+    
     @Override
     public boolean prev(){
         if (index == 0){
