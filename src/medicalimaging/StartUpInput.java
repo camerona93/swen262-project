@@ -105,8 +105,8 @@ public class StartUpInput extends javax.swing.JDialog {
     private void enterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterButtonActionPerformed
         // TODO add your handling code here:
         loadPath = path.getText();
-        StudyLoader loader = new LocalStudyLoader(loadPath);
-        StudyIterator loadedStudyIter = loader.execute();
+        ImageViewer viewer = new ImageViewer(loadPath);
+        viewer.show();
         dispose();
     }//GEN-LAST:event_enterButtonActionPerformed
 

@@ -29,11 +29,23 @@ public class ImageViewer extends javax.swing.JFrame {
     public ImageViewer() {
         StartUpInput start = new StartUpInput(this, true);
         start.show();
+        dispose();
         initComponents();
     }
     
+    public ImageViewer(String loadPath){
+        StartUpInput start = new StartUpInput(this, true);
+        StudyLoader studyLoader = new LocalStudyLoader(loadPath);
+        StudyIterator studyIter = studyLoader.execute();
+        initComponents(loadPath);
+        addImages();
+    }
+    
+    private void initComponents(String loadPath){
+        
+    }
+    
     private void addImages() {
-        studyIter = studyLoader.execute();
         Image[] images = studyIter.getImages();
         
         this.imageLabel.setIcon(new ImageIcon(images[0]));
