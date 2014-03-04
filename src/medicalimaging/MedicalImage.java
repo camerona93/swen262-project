@@ -7,6 +7,10 @@
 package medicalimaging;
 
 import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -18,6 +22,14 @@ public class MedicalImage {
     
     public MedicalImage(String imagePath) {
         this.imagePath = imagePath;
+        Image im = null;
+        try{
+            im = ImageIO.read(new File(this.imagePath));
+        }
+        catch(IOException io){
+            System.out.println("Image doesn't exist");
+        }
+        this.image = (BufferedImage)im;
     }
     
     public BufferedImage getImage(){
