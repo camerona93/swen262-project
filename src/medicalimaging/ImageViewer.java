@@ -22,6 +22,7 @@ public class ImageViewer extends javax.swing.JFrame {
     private StudyIterator studyIter;
     private StudyLoader studyLoader;
     private String loadPath;
+    private boolean singleView = true;
 
     /**
      * Creates new form ImageViewer
@@ -45,10 +46,10 @@ public class ImageViewer extends javax.swing.JFrame {
         
     }
     
-    private void addImages() {
-        Image[] images = studyIter.getImages();
+    public void addImages() {
+        ArrayList<MedicalImage> images = studyIter.getImages();
         
-        this.imageLabel.setIcon(new ImageIcon(images[0]));
+        this.imageLabel.setIcon(new ImageIcon(images.get(0).imagePath));
         this.imageLabel.setText("");
         /**
         for (int i=0; i<4; i++){
@@ -194,9 +195,16 @@ public class ImageViewer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void displayStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayStateActionPerformed
-        state.changeState();
-        displayState.setText(state.toString());
-        displayState.setSelected(!displayState.isSelected());
+        if (singleView){
+            studyIter = new SingleIterator(study);
+            singleView = false;
+        }
+        /**
+        else{
+            studyIter = new QuadIterator(study);
+            singleView = true;
+        }
+        */
     }//GEN-LAST:event_displayStateActionPerformed
 
     private void directoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_directoryButtonActionPerformed

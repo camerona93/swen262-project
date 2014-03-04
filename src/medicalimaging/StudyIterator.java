@@ -7,6 +7,7 @@
 package medicalimaging;
 
 import java.awt.Image;
+import java.util.ArrayList;
 
 /**
  *
@@ -28,7 +29,7 @@ public interface StudyIterator {
      * Returns the current list of medical images
      * @return list of medical images of object, MedicalImage
      */
-    public abstract Image[] getImages();
+    public abstract ArrayList<MedicalImage> getImages();
     /**
      * @return current index
      */

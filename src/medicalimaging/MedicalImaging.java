@@ -18,7 +18,8 @@ public class MedicalImaging {
      */
     public static void main(String[] args) {
         ImageViewer view = new ImageViewer();
-        view.show();
+        //view.addImages();
+        //view.show();
     }
     /*
     public static void main(String[] args) {

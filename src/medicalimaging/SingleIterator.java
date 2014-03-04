@@ -8,14 +8,13 @@ package medicalimaging;
 
 import java.awt.Image;
 import java.util.ArrayList;
-import java.util.List;
 /**
  *
  * @author Zach
  */
 public class SingleIterator implements StudyIterator {
     private final Study study;
-    private final List<Image> images;
+    private final ArrayList<MedicalImage> images;
     private int index;
     
     /**
@@ -27,7 +26,7 @@ public class SingleIterator implements StudyIterator {
         this.images = new ArrayList<>();
         ArrayList<MedicalImage> studyImages = study.getImages();
         for (MedicalImage i: studyImages){
-            images.add(i.getImage());
+            images.add(i);
         }
         this.index = 0;
     }
@@ -41,7 +40,7 @@ public class SingleIterator implements StudyIterator {
         this.images = new ArrayList<>();
         ArrayList<MedicalImage> studyImages = study.getImages();
         for (MedicalImage i: studyImages){
-            images.add(i.getImage());
+            images.add(i);
         }
         this.index = index;
     }
@@ -65,13 +64,8 @@ public class SingleIterator implements StudyIterator {
     }
     
     @Override
-    public Image[] getImages(){
-        Image[] imageSet = new Image[4];
-        imageSet[0] = getOrNull(index);
-        imageSet[1] = getOrNull(index+1);
-        imageSet[2] = getOrNull(index+2);
-        imageSet[3] = getOrNull(index+3);
-        return imageSet;
+    public ArrayList<MedicalImage> getImages(){
+        return this.images;
     }
     
     @Override
@@ -79,12 +73,6 @@ public class SingleIterator implements StudyIterator {
         return index;
     }
     
-    private Image getOrNull(int i){
-        if (i >= images.size()){
-            return null;
-        }
-        return images.get(i);
-    }
                 
                 
 }
