@@ -38,20 +38,16 @@ public class ImageViewer extends javax.swing.JFrame {
         StartUpInput start = new StartUpInput(this, true);
         studyLoader = new LocalStudyLoader(loadPath);
         studyIter = studyLoader.execute();
-        initComponents(loadPath);
+        initComponents();
         addImages();
-    }
-    
-    private void initComponents(String loadPath){
-        
     }
     
     public void addImages() {
         ArrayList<MedicalImage> images = studyIter.getImages();
         
         MedicalImage im = images.get(0);
-        //ImageIcon icon = new ImageIcon(im.getImage());
-        ImageIcon icon = new ImageIcon("/Users/Alfonso/Pictures/llama.jpg");
+        ImageIcon icon = new ImageIcon(im.getImage());
+        //ImageIcon icon = new ImageIcon("/Users/Alfonso/Pictures/llama.jpg");
         imageLabel.setIcon(icon);
         imageLabel.setText("");
         /**
