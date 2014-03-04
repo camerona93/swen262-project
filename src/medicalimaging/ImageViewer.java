@@ -19,7 +19,7 @@ import java.io.File;
 public class ImageViewer extends javax.swing.JFrame {
     private DisplayState state = new DisplayState();
     private Study study;
-    private SingleIterator studyIter;
+    private StudyIterator studyIter;
     private StudyLoader studyLoader;
     private String loadPath;
     private boolean singleView = true;
@@ -49,8 +49,11 @@ public class ImageViewer extends javax.swing.JFrame {
     public void addImages() {
         ArrayList<MedicalImage> images = studyIter.getImages();
         
-        this.imageLabel.setIcon(new ImageIcon(images.get(0).getImage()));
-        this.imageLabel.setText("");
+        MedicalImage im = images.get(0);
+        //ImageIcon icon = new ImageIcon(im.getImage());
+        ImageIcon icon = new ImageIcon("/Users/Alfonso/Pictures/llama.jpg");
+        imageLabel.setIcon(icon);
+        imageLabel.setText("");
         /**
         for (int i=0; i<4; i++){
             if (images[i] == null){
