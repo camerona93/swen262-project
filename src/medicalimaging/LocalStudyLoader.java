@@ -9,7 +9,7 @@ package medicalimaging;
 import java.io.File;
 import java.util.Arrays;
 /**
- *
+ * Loads study
  * @author ericlee
  */
 public class LocalStudyLoader implements StudyLoader{
@@ -19,7 +19,7 @@ public class LocalStudyLoader implements StudyLoader{
         this.loadPath = loadPath;
     }
     
-    public StudyIterator execute() {
+    public Study execute() {
         File rootDir = new File(loadPath);
         File[] subFiles = rootDir.listFiles();
         Study returnStudy = new Study(rootDir.getName());
@@ -30,10 +30,7 @@ public class LocalStudyLoader implements StudyLoader{
                 returnStudy.addImage(new MedicalImage(currentFile.getAbsolutePath()));
             }
         }
-        
-        StudyIterator studyIter = new SingleIterator(returnStudy);
-        return studyIter;
-        
+        return returnStudy;
     }
     
     private boolean fileSupported(File file) {

@@ -5,8 +5,6 @@
  */
 
 package medicalimaging;
-
-import java.util.Scanner;
 /**
  *
  * @author ericlee
@@ -17,13 +15,7 @@ public class MedicalImaging {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ImageViewer view = new ImageViewer();
-        //view.addImages();
-        //view.show();
-    }
-    /*
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
+        /*Scanner scan = new Scanner(System.in);
         
         System.out.println("Enter the path to study:");
         
@@ -31,11 +23,10 @@ public class MedicalImaging {
         StudyLoader loader = new LocalStudyLoader(path);
         
         Study loadedStudy = loader.execute();
-        System.out.println(loadedStudy);
+        System.out.println(loadedStudy);*/
+        
+        MainFrame window = new MainFrame();
+        window.setVisible(true);
     }
-                
-    }
-
-    }*/
     
 }

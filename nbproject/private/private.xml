@@ -3,13 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/LocalStudyLoader.java</file>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/DisplayState.java</file>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/ImageViewer.java</file>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/MedicalImaging.java</file>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/StudyLoader.java</file>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/Study.java</file>
-            <file>file:/C:/Users/Zach/Documents/GitHub/swen262-project/src/medicalimaging/SystemController.java</file>
+            <file>file:/Users/ericlee/NetBeansProjects/MedicalImaging/src/medicalimaging/MedicalImaging.java</file>
+            <file>file:/Users/ericlee/NetBeansProjects/MedicalImaging/src/medicalimaging/Study.java</file>
+            <file>file:/Users/ericlee/NetBeansProjects/MedicalImaging/src/medicalimaging/LocalStudyLoader.java</file>
+            <file>file:/Users/ericlee/NetBeansProjects/MedicalImaging/src/medicalimaging/StudyTreeModel.java</file>
+            <file>file:/Users/ericlee/NetBeansProjects/MedicalImaging/src/medicalimaging/MainFrame.java</file>
         </group>
     </open-files>
 </project-private>
