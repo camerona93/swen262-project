@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.Icon;
@@ -46,6 +48,13 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         JLabel placeHolder = new JLabel("");
         placeHolder.setPreferredSize(new Dimension(imagePanel.getWidth(), imagePanel.getWidth()));
         this.imagePanel.add(placeHolder);
+        
+        //Add window close listener
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                currentStudyLoader.save(currentStudy);
+            }
+        });
     }
     
     private void loadImages(ArrayList<MedicalImage> loadImages) {
