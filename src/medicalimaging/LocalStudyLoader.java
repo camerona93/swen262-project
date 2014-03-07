@@ -32,6 +32,7 @@ public class LocalStudyLoader implements StudyLoader{
         Study studySettings = this.loadSettings();
         if(studySettings != null) {
             returnStudy.displayMode = studySettings.displayMode;
+            returnStudy.selectedIndex = studySettings.selectedIndex;
         }
         //Loop through all the files in the directory and add them to the study
         for(File currentFile : subFiles) {

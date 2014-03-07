@@ -31,13 +31,17 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
      * Creates new form MainFrame
      */
     public MainFrame() {
+        //Load model
         this.currentStudy = new Study("Study");
         this.treeModel = new StudyTreeModel(this.currentStudy);
         initComponents();
+        
+        //Configure study tree
         this.studyTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         this.studyTree.addTreeSelectionListener(this);
         this.displayModeButton.setEnabled(false);
         
+        //Configure image panel
         this.imagePanel.setLayout(new GridLayout(0,1));
         JLabel placeHolder = new JLabel("");
         placeHolder.setPreferredSize(new Dimension(imagePanel.getWidth(), imagePanel.getWidth()));
@@ -80,11 +84,16 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             if(selectedImage == null){
                 selectedImage = (MedicalImage) this.selectFirstElement();
             }
+            
+            //Save selected index
+            int selectedIndex = this.treeModel.getIndexOfChild(this.currentStudy, selectedImage);
+            this.currentStudy.selectedIndex = selectedIndex;
+            
+            //Create list of images to display
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
             if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1)
                 loadImages.add(selectedImage);
             else if(this.currentStudy.displayMode == this.DISPLAY_MODE_2x2) {
-                int selectedIndex = this.treeModel.getIndexOfChild(this.currentStudy, selectedImage);
                 int childCount = this.treeModel.getChildCount(this.currentStudy);
                 if(selectedIndex > -1) {
                     if(childCount <= 4) {
@@ -203,11 +212,12 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             this.currentStudyLoader = new LocalStudyLoader(studyPath);
             this.currentStudy = this.currentStudyLoader.execute();
             this.treeModel.setRootStudy(currentStudy);
-            System.out.println(this.studyTree.getRowCount());
             
-            TreePath firstImagePath = this.studyTree.getPathForRow(1);
-            if(firstImagePath != null)
-                this.studyTree.setSelectionPath(firstImagePath);
+            TreePath selectedImage = this.studyTree.getPathForRow(this.currentStudy.selectedIndex + 1);
+            if(selectedImage != null)
+                this.studyTree.setSelectionPath(selectedImage);
+            else
+                this.selectFirstElement();
             this.displayModeButton.setEnabled(true);
         }
     }//GEN-LAST:event_loadDiskButtonActionPerformed
@@ -237,7 +247,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private Study currentStudy;
     private StudyLoader currentStudyLoader;
     private StudyTreeModel treeModel;
-    private int displayMode;
     private final int DISPLAY_MODE_1x1 = 1;
     private final int DISPLAY_MODE_2x2 = 2;
     private JFileChooser fileChooser = new JFileChooser();
