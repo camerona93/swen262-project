@@ -143,7 +143,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         loadDiskButton = new javax.swing.JButton();
         displayModeButton = new javax.swing.JButton();
         toolbar = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
+        openButton = new javax.swing.JButton();
+        copyButton = new javax.swing.JButton();
+        previousButton = new javax.swing.JButton();
+        nextButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -176,11 +179,34 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
 
         toolbar.setRollover(true);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/copy.gif"))); // NOI18N
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbar.add(jButton1);
+        openButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/open.gif"))); // NOI18N
+        openButton.setFocusable(false);
+        openButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        openButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(openButton);
+
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/copy.gif"))); // NOI18N
+        copyButton.setFocusable(false);
+        copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(copyButton);
+
+        previousButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/previous.gif"))); // NOI18N
+        previousButton.setFocusable(false);
+        previousButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        previousButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        previousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousButtonActionPerformed(evt);
+            }
+        });
+        toolbar.add(previousButton);
+
+        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/next.gif"))); // NOI18N
+        nextButton.setFocusable(false);
+        nextButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nextButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(nextButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -259,6 +285,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
         this.valueChanged(null);
     }//GEN-LAST:event_displayModeButtonActionPerformed
+
+    private void previousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_previousButtonActionPerformed
     
     
     private Object selectFirstElement() {
@@ -282,10 +312,13 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private JFileChooser fileChooser = new JFileChooser();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton copyButton;
     private javax.swing.JButton displayModeButton;
     private javax.swing.JPanel imagePanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton loadDiskButton;
+    private javax.swing.JButton nextButton;
+    private javax.swing.JButton openButton;
+    private javax.swing.JButton previousButton;
     private javax.swing.JTree studyTree;
     private javax.swing.JScrollPane studyTreePanel;
     private javax.swing.JToolBar toolbar;
