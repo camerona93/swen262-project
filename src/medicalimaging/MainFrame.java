@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -52,7 +54,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         //Add window close listener
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                currentStudyLoader.save(currentStudy);
+                if(currentStudyLoader != null)
+                    currentStudyLoader.save(currentStudy);
             }
         });
     }
@@ -251,6 +254,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             return this.studyTree.getLastSelectedPathComponent();
         }
         return null;
+    }
+    
+    private void copyCurrentStudy() {
+        System.out.println("COPY!");
     }
     
     private Study currentStudy;
