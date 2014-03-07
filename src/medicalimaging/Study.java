@@ -11,13 +11,15 @@ import java.util.ArrayList;
  *
  * @author ericlee
  */
-public class Study {
-    private ArrayList<MedicalImage> images;
+public class Study implements java.io.Serializable{
+    private transient ArrayList<MedicalImage> images;
     protected String name;
+    protected int displayMode;
     
     public Study(String name) {
         this.name = name;
         this.images = new ArrayList<MedicalImage>();
+        this.displayMode = 1;
     }
     
     public int getImageCount() {

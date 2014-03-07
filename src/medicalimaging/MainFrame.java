@@ -18,7 +18,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.Position;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -32,11 +31,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
      * Creates new form MainFrame
      */
     public MainFrame() {
-        this.treeModel = new StudyTreeModel(new Study("Study"));
+        this.currentStudy = new Study("Study");
+        this.treeModel = new StudyTreeModel(this.currentStudy);
         initComponents();
         this.studyTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         this.studyTree.addTreeSelectionListener(this);
-        this.displayMode = this.DISPLAY_MODE_1x1;
         this.displayModeButton.setEnabled(false);
         
         this.imagePanel.setLayout(new GridLayout(0,1));
@@ -51,8 +50,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         this.imagePanel.setLayout(new GridLayout(gridSize, gridSize));
         
         for(MedicalImage loadImage : loadImages) {
-            int imageWidth = this.imagePanel.getWidth() / this.displayMode;
-            int imageHeight = this.imagePanel.getHeight() / this.displayMode;
+            int imageWidth = this.imagePanel.getWidth() / this.currentStudy.displayMode;
+            int imageHeight = this.imagePanel.getHeight() / this.currentStudy.displayMode;
             ImageIcon tempIcon = new ImageIcon(loadImage.imagePath);
             Image image = tempIcon.getImage();
             Image scaledImage = image.getScaledInstance(imageWidth, imageHeight, 0);
@@ -82,9 +81,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                 selectedImage = (MedicalImage) this.selectFirstElement();
             }
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
-            if(this.displayMode == this.DISPLAY_MODE_1x1)
+            if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1)
                 loadImages.add(selectedImage);
-            else if(this.displayMode == this.DISPLAY_MODE_2x2) {
+            else if(this.currentStudy.displayMode == this.DISPLAY_MODE_2x2) {
                 int selectedIndex = this.treeModel.getIndexOfChild(this.currentStudy, selectedImage);
                 int childCount = this.treeModel.getChildCount(this.currentStudy);
                 if(selectedIndex > -1) {
@@ -105,7 +104,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                     }
                 }
             }
-
             this.loadImages(loadImages);
         }
     }
@@ -192,6 +190,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadDiskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDiskButtonActionPerformed
+        //Save the current Study
+        if(this.currentStudyLoader != null)
+            this.currentStudyLoader.save(currentStudy);
+        
         this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int fcReturn = fileChooser.showDialog(this, null);
         
@@ -211,13 +213,13 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     }//GEN-LAST:event_loadDiskButtonActionPerformed
 
     private void displayModeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayModeButtonActionPerformed
-        if(this.displayMode == this.DISPLAY_MODE_1x1) {
+        if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1) {
             this.displayModeButton.setText("1x1");
-            this.displayMode = this.DISPLAY_MODE_2x2;
+            this.currentStudy.displayMode = this.DISPLAY_MODE_2x2;
         }
         else {
             this.displayModeButton.setText("2x2");
-            this.displayMode = this.DISPLAY_MODE_1x1;
+            this.currentStudy.displayMode = this.DISPLAY_MODE_1x1;
         }
         this.valueChanged(null);
     }//GEN-LAST:event_displayModeButtonActionPerformed

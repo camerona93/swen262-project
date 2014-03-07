@@ -12,4 +12,5 @@ package medicalimaging;
  */
 public interface StudyLoader {
     public Study execute();
+    public void save(Study saveStudy);
 }
