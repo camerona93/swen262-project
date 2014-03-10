@@ -17,6 +17,9 @@ public class Study implements java.io.Serializable{
     protected int displayMode;
     protected int selectedIndex;
     
+    public static final int DISPLAY_MODE_1x1 = 1;
+    public static final int DISPLAY_MODE_2x2 = 2;
+    
     public Study(String name) {
         this.name = name;
         this.images = new ArrayList<MedicalImage>();

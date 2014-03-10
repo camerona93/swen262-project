@@ -63,9 +63,12 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         int gridSize = (int)Math.ceil(Math.sqrt(loadImages.size()));
         this.imagePanel.setLayout(new GridLayout(gridSize, gridSize));
         
+        int gridDivider = 1;
+        if(currentStudy.displayMode == Study.DISPLAY_MODE_2x2)
+            gridDivider = 2;
         for(MedicalImage loadImage : loadImages) {
-            int imageWidth = this.imagePanel.getWidth() / this.currentStudy.displayMode;
-            int imageHeight = this.imagePanel.getHeight() / this.currentStudy.displayMode;
+            int imageWidth = this.imagePanel.getWidth() / gridDivider;
+            int imageHeight = this.imagePanel.getHeight() / gridDivider;
             ImageIcon tempIcon = new ImageIcon(loadImage.imagePath);
             Image image = tempIcon.getImage();
             Image scaledImage = image.getScaledInstance(imageWidth, imageHeight, 0);
@@ -101,9 +104,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             
             //Create list of images to display
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
-            if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1)
+            if(this.currentStudy.displayMode == Study.DISPLAY_MODE_1x1)
                 loadImages.add(selectedImage);
-            else if(this.currentStudy.displayMode == this.DISPLAY_MODE_2x2) {
+            else if(this.currentStudy.displayMode == Study.DISPLAY_MODE_2x2) {
                 int childCount = this.treeModel.getChildCount(this.currentStudy);
                 if(selectedIndex > -1) {
                     if(childCount <= 4) {
@@ -254,13 +257,13 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void displayModeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayModeButtonActionPerformed
-        if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1) {
+        if(this.currentStudy.displayMode == Study.DISPLAY_MODE_1x1) {
             this.displayModeButton.setText("1x1");
-            this.currentStudy.displayMode = this.DISPLAY_MODE_2x2;
+            this.currentStudy.displayMode = Study.DISPLAY_MODE_2x2;
         }
         else {
             this.displayModeButton.setText("2x2");
-            this.currentStudy.displayMode = this.DISPLAY_MODE_1x1;
+            this.currentStudy.displayMode = Study.DISPLAY_MODE_1x1;
         }
         this.valueChanged(null);
     }//GEN-LAST:event_displayModeButtonActionPerformed
@@ -357,8 +360,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private Study currentStudy;
     private StudyLoader currentStudyLoader;
     private StudyTreeModel treeModel;
-    private final int DISPLAY_MODE_1x1 = 1;
-    private final int DISPLAY_MODE_2x2 = 2;
     private JFileChooser fileChooser = new JFileChooser();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
