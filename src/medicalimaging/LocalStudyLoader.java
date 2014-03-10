@@ -40,7 +40,7 @@ public class LocalStudyLoader implements StudyLoader{
         //Loop through all the files in the directory and add them to the study
         for(File currentFile : subFiles) {
             if(!currentFile.isDirectory() && this.fileSupported(currentFile)) {
-                returnStudy.addImage(new MedicalImage(currentFile.getAbsolutePath()));
+                returnStudy.addElement(new MedicalImage(currentFile.getAbsolutePath()));
             }
         }
         return returnStudy;

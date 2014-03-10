@@ -32,12 +32,20 @@ public class StudyTreeModel implements TreeModel{
 
     @Override
     public Object getChild(Object parent, int index) {
-        return rootStudy.getImage(index);
+        if(parent instanceof Study) {
+            Study studyParent = (Study)parent;
+            return studyParent.getElement(index);
+        }
+        return null;
     }
 
     @Override
     public int getChildCount(Object parent) {
-        return rootStudy.getImageCount();
+        if(parent instanceof Study) {
+            Study studyParent = (Study)parent;
+            return studyParent.getElementCount();
+        }
+        return 0;
     }
 
     @Override
@@ -55,9 +63,12 @@ public class StudyTreeModel implements TreeModel{
 
     @Override
     public int getIndexOfChild(Object parent, Object child) {
-        for(int i = 0; i < rootStudy.getImageCount(); i++) {
-            if(child == rootStudy.getImage(i))
-                return i;
+        if(parent instanceof Study) {
+            Study parentStudy = (Study)parent;
+            for(int i = 0; i < parentStudy.getElementCount(); i++) {
+                if(child == parentStudy.getElement(i))
+                    return i;
+            }
         }
         return -1;
     }

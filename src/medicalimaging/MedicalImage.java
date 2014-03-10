@@ -9,7 +9,7 @@ package medicalimaging;
  *
  * @author ericlee
  */
-public class MedicalImage {
+public class MedicalImage extends StudyElement{
     public String imagePath;
     
     public MedicalImage(String imagePath) {

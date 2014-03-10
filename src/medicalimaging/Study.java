@@ -11,8 +11,8 @@ import java.util.ArrayList;
  *
  * @author ericlee
  */
-public class Study implements java.io.Serializable{
-    private transient ArrayList<MedicalImage> images;
+public class Study extends StudyElement{
+    private transient ArrayList<StudyElement> studyElements;
     protected String name;
     protected int displayMode;
     protected int selectedIndex;
@@ -22,28 +22,28 @@ public class Study implements java.io.Serializable{
     
     public Study(String name) {
         this.name = name;
-        this.images = new ArrayList<MedicalImage>();
+        this.studyElements = new ArrayList<StudyElement>();
         this.displayMode = 1;
         this.selectedIndex = -1;
     }
     
-    public int getImageCount() {
-        return this.images.size();
+    public int getElementCount() {
+        return this.studyElements.size();
     }
     
-    public MedicalImage getImage(int index) {
-        if(index < this.getImageCount())
-            return this.images.get(index);
+    public StudyElement getElement(int index) {
+        if(index < this.getElementCount())
+            return this.studyElements.get(index);
         return null;
     }
     
-    public void removeImage(int index) {
-        if(index < this.getImageCount() && index > -1)
-            this.images.remove(index);
+    public void removeElement(int index) {
+        if(index < this.getElementCount() && index > -1)
+            this.studyElements.remove(index);
     }
 
-    public void addImage(MedicalImage medicalImage) {
-        this.images.add(medicalImage);
+    public void addElement(StudyElement element) {
+        this.studyElements.add(element);
     }
     
     public String toString() {
