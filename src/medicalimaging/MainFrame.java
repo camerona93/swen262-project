@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.event.TreeSelectionEvent;
@@ -140,7 +139,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         studyTreePanel = new javax.swing.JScrollPane();
         studyTree = new javax.swing.JTree(this.treeModel);
         imagePanel = new javax.swing.JPanel();
-        loadDiskButton = new javax.swing.JButton();
         displayModeButton = new javax.swing.JButton();
         toolbar = new javax.swing.JToolBar();
         openButton = new javax.swing.JButton();
@@ -163,13 +161,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        loadDiskButton.setText("Load Study");
-        loadDiskButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadDiskButtonActionPerformed(evt);
-            }
-        });
-
         displayModeButton.setText("4x4");
         displayModeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,12 +174,22 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         openButton.setFocusable(false);
         openButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         openButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        openButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openButtonActionPerformed(evt);
+            }
+        });
         toolbar.add(openButton);
 
         copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/copy.gif"))); // NOI18N
         copyButton.setFocusable(false);
         copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        copyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyButtonActionPerformed(evt);
+            }
+        });
         toolbar.add(copyButton);
 
         previousButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/previous.gif"))); // NOI18N
@@ -206,6 +207,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         nextButton.setFocusable(false);
         nextButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nextButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        nextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextButtonActionPerformed(evt);
+            }
+        });
         toolbar.add(nextButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -223,8 +229,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                         .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(loadDiskButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(displayModeButton)
                         .addGap(24, 24, 24))))
         );
@@ -241,16 +246,70 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(loadDiskButton)
-                            .addComponent(displayModeButton))))
+                        .addComponent(displayModeButton)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loadDiskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDiskButtonActionPerformed
+    private void displayModeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayModeButtonActionPerformed
+        if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1) {
+            this.displayModeButton.setText("1x1");
+            this.currentStudy.displayMode = this.DISPLAY_MODE_2x2;
+        }
+        else {
+            this.displayModeButton.setText("2x2");
+            this.currentStudy.displayMode = this.DISPLAY_MODE_1x1;
+        }
+        this.valueChanged(null);
+    }//GEN-LAST:event_displayModeButtonActionPerformed
+
+    private void previousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousButtonActionPerformed
+        this.selectPreviousElement();
+    }//GEN-LAST:event_previousButtonActionPerformed
+
+    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+        loadStudy();
+    }//GEN-LAST:event_openButtonActionPerformed
+
+    private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
+        this.copyCurrentStudy();
+    }//GEN-LAST:event_copyButtonActionPerformed
+
+    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        this.selectNextElement();
+    }//GEN-LAST:event_nextButtonActionPerformed
+    
+    
+    private Object selectFirstElement() {
+        TreePath firstPath = this.studyTree.getPathForRow(1);
+        if(firstPath != null) {
+            this.studyTree.setSelectionPath(firstPath);
+            return this.studyTree.getLastSelectedPathComponent();
+        }
+        return null;
+    }
+    
+    private void copyCurrentStudy() {
+        if(currentStudyLoader != null) {
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int fcReturn = fileChooser.showDialog(this, null);
+            if(fcReturn == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                if(currentStudyLoader.copyStudy(currentStudy, selectedFile.getAbsolutePath())) {
+                    //Open new Window.
+                    MainFrame newWindow = new MainFrame();
+                    newWindow.currentStudyLoader = new LocalStudyLoader(selectedFile.getAbsolutePath());
+                    newWindow.currentStudy = newWindow.currentStudyLoader.execute();
+                    newWindow.treeModel.setRootStudy(newWindow.currentStudy);
+                    newWindow.setVisible(true);
+                }
+            }
+        }
+    }
+    
+    private void loadStudy() {
         //Save the current Study
         if(this.currentStudyLoader != null)
             this.currentStudyLoader.save(currentStudy);
@@ -272,36 +331,27 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                 this.selectFirstElement();
             this.displayModeButton.setEnabled(true);
         }
-    }//GEN-LAST:event_loadDiskButtonActionPerformed
-
-    private void displayModeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayModeButtonActionPerformed
-        if(this.currentStudy.displayMode == this.DISPLAY_MODE_1x1) {
-            this.displayModeButton.setText("1x1");
-            this.currentStudy.displayMode = this.DISPLAY_MODE_2x2;
-        }
-        else {
-            this.displayModeButton.setText("2x2");
-            this.currentStudy.displayMode = this.DISPLAY_MODE_1x1;
-        }
-        this.valueChanged(null);
-    }//GEN-LAST:event_displayModeButtonActionPerformed
-
-    private void previousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_previousButtonActionPerformed
-    
-    
-    private Object selectFirstElement() {
-        TreePath firstPath = this.studyTree.getPathForRow(1);
-        if(firstPath != null) {
-            this.studyTree.setSelectionPath(firstPath);
-            return this.studyTree.getLastSelectedPathComponent();
-        }
-        return null;
     }
     
-    private void copyCurrentStudy() {
-        System.out.println("COPY!");
+    private void selectPreviousElement() {
+        int[] selectedRow = studyTree.getSelectionRows();
+        if(selectedRow.length == 0)
+            this.selectFirstElement();
+        else if(selectedRow[0] > 1) {
+            TreePath selectionPath = studyTree.getPathForRow(--selectedRow[0]);
+            studyTree.setSelectionPath(selectionPath);
+        }
+    }
+    
+    private void selectNextElement() {
+        int[] selectedRow = studyTree.getSelectionRows();
+        int rowCount = studyTree.getRowCount();
+        if(selectedRow.length == 0)
+            this.selectFirstElement();
+        else if(selectedRow[0] < rowCount) {
+            TreePath selectionPath = studyTree.getPathForRow(++selectedRow[0]);
+            studyTree.setSelectionPath(selectionPath);
+        }
     }
     
     private Study currentStudy;
@@ -315,7 +365,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private javax.swing.JButton copyButton;
     private javax.swing.JButton displayModeButton;
     private javax.swing.JPanel imagePanel;
-    private javax.swing.JButton loadDiskButton;
     private javax.swing.JButton nextButton;
     private javax.swing.JButton openButton;
     private javax.swing.JButton previousButton;

@@ -13,4 +13,5 @@ package medicalimaging;
 public interface StudyLoader {
     public Study execute();
     public void save(Study saveStudy);
+    public boolean copyStudy(Study copyStudy, String copyPath);
 }

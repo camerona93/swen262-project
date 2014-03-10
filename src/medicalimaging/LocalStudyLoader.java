@@ -8,10 +8,13 @@ package medicalimaging;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 /**
  * Loads study
@@ -53,6 +56,37 @@ public class LocalStudyLoader implements StudyLoader{
             System.out.println(e);
         }
         
+    }
+    
+    public boolean copyStudy(Study copyStudy, String copyPath){
+        this.save(copyStudy);
+        
+        File rootDir = new File(this.loadPath);
+        
+        File[] subFiles = rootDir.listFiles();
+        for(File currentFile : subFiles) {
+            FileChannel inputChannel = null;
+            FileChannel outputChannel = null;
+            try {
+                if(!currentFile.isDirectory()) {
+                    inputChannel = new FileInputStream(currentFile.getAbsoluteFile()).getChannel();
+                    outputChannel = new FileOutputStream(copyPath + "/" + this.getFileName(currentFile.getAbsolutePath())).getChannel();
+                    outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+                    
+                    inputChannel.close();
+                    outputChannel.close();
+                }
+            }
+            catch(IOException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private String getFileName(String file) {
+        int fileNameStartIndex = file.lastIndexOf("/") + 1;
+        return file.substring(fileNameStartIndex);
     }
     
     private Study loadSettings() {
