@@ -16,6 +16,7 @@ public class Study extends StudyElement{
     protected String name;
     protected int displayMode;
     protected int selectedIndex;
+    protected transient StudyLoader studyLoader;
     
     public static final int DISPLAY_MODE_1x1 = 1;
     public static final int DISPLAY_MODE_2x2 = 2;

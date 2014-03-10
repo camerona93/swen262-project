@@ -52,8 +52,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         //Add window close listener
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                if(currentStudyLoader != null)
-                    currentStudyLoader.save(currentStudy);
+                if(currentStudy.studyLoader != null)
+                    currentStudy.studyLoader.save(currentStudy);
             }
         });
     }
@@ -295,16 +295,16 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     }
     
     private void copyCurrentStudy() {
-        if(currentStudyLoader != null) {
+        if(currentStudy.studyLoader != null) {
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int fcReturn = fileChooser.showDialog(this, null);
             if(fcReturn == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
-                if(currentStudyLoader.copyStudy(currentStudy, selectedFile.getAbsolutePath())) {
+                if(currentStudy.studyLoader.copyStudy(currentStudy, selectedFile.getAbsolutePath())) {
                     //Open new Window.
                     MainFrame newWindow = new MainFrame();
-                    newWindow.currentStudyLoader = new LocalStudyLoader(selectedFile.getAbsolutePath());
-                    newWindow.currentStudy = newWindow.currentStudyLoader.execute();
+                    newWindow.currentStudy.studyLoader = new LocalStudyLoader(selectedFile.getAbsolutePath());
+                    newWindow.currentStudy = newWindow.currentStudy.studyLoader.execute();
                     newWindow.treeModel.setRootStudy(newWindow.currentStudy);
                     newWindow.setVisible(true);
                 }
@@ -314,8 +314,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     
     private void loadStudy() {
         //Save the current Study
-        if(this.currentStudyLoader != null)
-            this.currentStudyLoader.save(currentStudy);
+        if(this.currentStudy.studyLoader != null)
+            this.currentStudy.studyLoader.save(currentStudy);
         
         this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int fcReturn = fileChooser.showDialog(this, null);
@@ -323,8 +323,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         if(fcReturn == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String studyPath = selectedFile.getAbsolutePath();
-            this.currentStudyLoader = new LocalStudyLoader(studyPath);
-            this.currentStudy = this.currentStudyLoader.execute();
+            StudyLoader newLoader = new LocalStudyLoader(studyPath);
+            this.currentStudy = newLoader.execute();
+            this.currentStudy.studyLoader = newLoader;
             this.treeModel.setRootStudy(currentStudy);
             
             TreePath selectedImage = this.studyTree.getPathForRow(this.currentStudy.selectedIndex + 1);
@@ -358,7 +359,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     }
     
     private Study currentStudy;
-    private StudyLoader currentStudyLoader;
     private StudyTreeModel treeModel;
     private JFileChooser fileChooser = new JFileChooser();
 

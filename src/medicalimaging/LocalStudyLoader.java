@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 /**
  * Loads study
@@ -42,12 +40,24 @@ public class LocalStudyLoader implements StudyLoader{
             if(!currentFile.isDirectory() && this.fileSupported(currentFile)) {
                 returnStudy.addElement(new MedicalImage(currentFile.getAbsolutePath()));
             }
+            else if(currentFile.isDirectory()){
+                //TODO: I Think we may need to have the studyloader belong to the study
+                StudyLoader newStudyLoader = new LocalStudyLoader(loadPath + "/" + currentFile.getName());
+                Study subStudy = newStudyLoader.execute();
+                subStudy.studyLoader = newStudyLoader;
+                //Create new study loader. Execute and add substudy as an element
+                returnStudy.addElement(subStudy);
+            }
         }
         return returnStudy;
     }
     
     public void save(Study saveStudy) {
         try {
+            System.out.println("fire");
+            File serializeFile = new File(this.loadPath + "/study.ser");
+            serializeFile.createNewFile();
+            
             FileOutputStream fileOut = new FileOutputStream(this.loadPath + "/study.ser");
             ObjectOutputStream output = new ObjectOutputStream(fileOut);
             output.writeObject(saveStudy);
@@ -99,7 +109,7 @@ public class LocalStudyLoader implements StudyLoader{
             fileIn.close();
         }
         catch(Exception e) {
-            System.out.println("error");
+            System.out.println(e);
         }
         return study;
     }
