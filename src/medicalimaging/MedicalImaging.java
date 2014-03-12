@@ -14,17 +14,7 @@ public class MedicalImaging {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        /*Scanner scan = new Scanner(System.in);
-        
-        System.out.println("Enter the path to study:");
-        
-        String path = scan.next();
-        StudyLoader loader = new LocalStudyLoader(path);
-        
-        Study loadedStudy = loader.execute();
-        System.out.println(loadedStudy);*/
-        
+    public static void main(String[] args) {        
         MainFrame window = new MainFrame();
         window.setVisible(true);
     }

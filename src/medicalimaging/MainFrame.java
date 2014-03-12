@@ -58,6 +58,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
     }
     
+    /**
+     * Load images into the JPanel
+     * @param loadImages ArrayList<MedicalImage> to load
+     */
     private void loadImages(ArrayList<MedicalImage> loadImages) {
         this.clearImagePanel();
         int gridSize = (int)Math.ceil(Math.sqrt(loadImages.size()));
@@ -80,6 +84,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         this.imagePanel.revalidate();
     }
     
+    /**
+     * Removes all images from the image JPanel
+     */
     private void clearImagePanel() {
         Component[] components = this.imagePanel.getComponents();
         for(Component curComponent : components) {
@@ -87,6 +94,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
     }
     
+    /**
+     * Executes when the value of the JTree is changed
+     * TODO: This method should be cleaned up and sized down.
+     * @param e 
+     */
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if(this.studyTree.getLastSelectedPathComponent() instanceof Study) {
@@ -311,6 +323,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         return null;
     }
     
+    /**
+     * Saves all the studies loaded within the frame
+     */
     private void saveStudy() {
         Study rootStudy = (Study)treeModel.getRoot();
         rootStudy.studyLoader.save(rootStudy);
@@ -334,6 +349,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
     }
     
+    /**
+     * Loads a study to display in the frame
+     */
     private void loadStudy() {
         //Save the current Study
         if(this.currentStudy.studyLoader != null)
@@ -367,6 +385,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
     }
     
+    /**
+     * Selects the previous item in the current study.
+     */
     private void selectPreviousElement() {
         int[] selectedRow = studyTree.getSelectionRows();
         if(selectedRow.length == 0)
@@ -377,6 +398,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
     }
     
+    /**
+     * Selects the next item in the current study.
+     */
     private void selectNextElement() {
         int[] selectedRow = studyTree.getSelectionRows();
         int rowCount = studyTree.getRowCount();

@@ -15,16 +15,20 @@ import java.io.ObjectOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 /**
- * Loads study
+ * Handles all interaction for saving, loading, and coping a study
  * @author ericlee
  */
 public class LocalStudyLoader implements StudyLoader{
-    protected String loadPath;
+    protected String loadPath; 
     
     public LocalStudyLoader(String loadPath) {
         this.loadPath = loadPath;
     }
     
+    /**
+     * Loads a study at the load path from the disk
+     * @return Study loaded study
+     */
     public Study execute() {
         File rootDir = new File(loadPath);
         File[] subFiles = rootDir.listFiles();
@@ -41,20 +45,22 @@ public class LocalStudyLoader implements StudyLoader{
                 returnStudy.addElement(new MedicalImage(currentFile.getAbsolutePath()));
             }
             else if(currentFile.isDirectory()){
-                //TODO: I Think we may need to have the studyloader belong to the study
+                //Detects a study within a study
                 StudyLoader newStudyLoader = new LocalStudyLoader(loadPath + "/" + currentFile.getName());
                 Study subStudy = newStudyLoader.execute();
                 subStudy.studyLoader = newStudyLoader;
-                //Create new study loader. Execute and add substudy as an element
                 returnStudy.addElement(subStudy);
             }
         }
         return returnStudy;
     }
     
+    /**
+     * Saves a study to the disk
+     * @param saveStudy Study to save
+     */
     public void save(Study saveStudy) {
         try {
-            System.out.println("fire");
             File serializeFile = new File(this.loadPath + "/study.ser");
             serializeFile.createNewFile();
             
@@ -75,16 +81,21 @@ public class LocalStudyLoader implements StudyLoader{
         
     }
     
+    /**
+     * Copies a given study to the given path
+     * @param copyStudy
+     * @param copyPath
+     * @return 
+     */
     public boolean copyStudy(Study copyStudy, String copyPath){
         this.save(copyStudy);
         return this.copyFiles(loadPath, copyPath);
     }
     
-    private String getFileName(String file) {
-        int fileNameStartIndex = file.lastIndexOf("/") + 1;
-        return file.substring(fileNameStartIndex);
-    }
-    
+    /**
+     * Loads the settings of a study
+     * @return The study loaded with the settings
+     */
     private Study loadSettings() {
         Study study = null;
         try {
@@ -100,6 +111,11 @@ public class LocalStudyLoader implements StudyLoader{
         return study;
     }
     
+    /**
+     * Checks if a given file is supported
+     * @param file File the file to check
+     * @return True if supported false if not.
+     */
     private boolean fileSupported(File file) {
         String fileName = file.getName();
         int fileTypeIndex = fileName.lastIndexOf(".");
@@ -107,6 +123,10 @@ public class LocalStudyLoader implements StudyLoader{
         return Arrays.asList(this.getSupportedFileTypes()).contains(fileType);
     }
     
+    /**
+     * Gets an array of strings of all supported file types
+     * @return String[] of supported file types
+     */
     private String[] getSupportedFileTypes() {
         return new String[]{
             ".jpeg",
@@ -114,6 +134,12 @@ public class LocalStudyLoader implements StudyLoader{
         };
     }
     
+    /**
+     * Copies a given directory to the given path
+     * @param sourcePath The directory to copy
+     * @param copyPath The path to copy to
+     * @return True if the operation is a success.
+     */
     private boolean copyFiles(String sourcePath, String copyPath) {
         File rootDir = new File(sourcePath);
         
@@ -124,7 +150,7 @@ public class LocalStudyLoader implements StudyLoader{
             try {
                 if(!currentFile.isDirectory()) {
                     inputChannel = new FileInputStream(currentFile.getAbsoluteFile()).getChannel();
-                    outputChannel = new FileOutputStream(copyPath + "/" + this.getFileName(currentFile.getAbsolutePath())).getChannel();
+                    outputChannel = new FileOutputStream(copyPath + "/" + currentFile.getName()).getChannel();
                     outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
                     
                     inputChannel.close();

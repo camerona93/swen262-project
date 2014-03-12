@@ -13,7 +13,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 /**
- *
+ * Model of the study for the JTree
  * @author ericlee
  */
 public class StudyTreeModel implements TreeModel{
@@ -92,6 +92,12 @@ public class StudyTreeModel implements TreeModel{
         this.valueForPathChanged(new TreePath(this.rootStudy), this.rootStudy);
     }
     
+    /**
+     * Gets the parent of the given element
+     * @param child (StudyElement) Element to find
+     * @param startElement (Study) Study to begin the search
+     * @return 
+     */
     public Object getParent(StudyElement child, Study startElement) {
         for(int i = 0; i < startElement.getElementCount(); i++) {
             StudyElement currentElement = startElement.getElement(i);

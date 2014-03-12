@@ -6,7 +6,6 @@
 
 package medicalimaging;
 /**
- *
  * @author ericlee
  */
 public class MedicalImage extends StudyElement{
