@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 public class Study extends StudyElement{
     private transient ArrayList<StudyElement> studyElements;
+    private int indexOfFirstStudy;
+    
     protected String name;
     protected int displayMode;
     protected int selectedIndex;
@@ -26,6 +28,7 @@ public class Study extends StudyElement{
         this.studyElements = new ArrayList<StudyElement>();
         this.displayMode = 1;
         this.selectedIndex = -1;
+        this.indexOfFirstStudy = 0;
     }
     
     public int getElementCount() {
@@ -39,12 +42,21 @@ public class Study extends StudyElement{
     }
     
     public void removeElement(int index) {
-        if(index < this.getElementCount() && index > -1)
-            this.studyElements.remove(index);
+        if(index < this.getElementCount() && index > -1) {
+            Object removedElement = this.studyElements.remove(index);
+            if(!(removedElement instanceof Study))
+                indexOfFirstStudy--;
+            
+        }
     }
 
     public void addElement(StudyElement element) {
-        this.studyElements.add(element);
+        if(element instanceof Study)
+            studyElements.add(element);
+        else {
+            studyElements.add(indexOfFirstStudy, element);
+            indexOfFirstStudy++;
+        }
     }
     
     public String toString() {

@@ -53,7 +53,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 if(currentStudy.studyLoader != null)
-                    currentStudy.studyLoader.save(currentStudy);
+                    saveStudy();
             }
         });
     }
@@ -90,13 +90,15 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         if(this.studyTree.getLastSelectedPathComponent() instanceof Study) {
-            this.selectFirstElement();
+            this.selectFirstElement(currentStudy);
         }
         else {
             MedicalImage selectedImage = (MedicalImage) this.studyTree.getLastSelectedPathComponent();
             if(selectedImage == null){
-                selectedImage = (MedicalImage) this.selectFirstElement();
+                selectedImage = (MedicalImage) this.selectFirstElement(currentStudy);
             }
+            //Reset current study
+            currentStudy = (Study)treeModel.getParent(selectedImage, (Study)treeModel.getRoot());
             
             //Save selected index
             int selectedIndex = this.treeModel.getIndexOfChild(this.currentStudy, selectedImage);
@@ -107,7 +109,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             if(this.currentStudy.displayMode == Study.DISPLAY_MODE_1x1)
                 loadImages.add(selectedImage);
             else if(this.currentStudy.displayMode == Study.DISPLAY_MODE_2x2) {
-                int childCount = this.treeModel.getChildCount(this.currentStudy);
+                int childCount = this.treeModel.getImageCountForParent(this.currentStudy);
+                System.out.println(childCount);
                 if(selectedIndex > -1) {
                     if(childCount <= 4) {
                         for(int i = 0; i < childCount; i++) {
@@ -285,13 +288,32 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     }//GEN-LAST:event_nextButtonActionPerformed
     
     
-    private Object selectFirstElement() {
-        TreePath firstPath = this.studyTree.getPathForRow(1);
-        if(firstPath != null) {
-            this.studyTree.setSelectionPath(firstPath);
-            return this.studyTree.getLastSelectedPathComponent();
+    /**
+     * Selects the first element of a given study
+     * @param parent
+     * @return 
+     */
+    private Object selectFirstElement(Study parent) {
+        System.out.println("Find: " + parent.toString());
+        int parentStartIndex = treeModel.getRowOfElement(parent, (Study)treeModel.getRoot());
+        System.out.println(parentStartIndex);
+        if(parentStartIndex >= 0) {
+            for(int i = 0; i < parent.getElementCount(); i++) {
+                StudyElement currentElement = parent.getElement(i);
+                if(treeModel.isLeaf(currentElement)) {
+                    System.out.println(parentStartIndex + i + 1);
+                    TreePath firstPath = this.studyTree.getPathForRow(parentStartIndex + i + 1);
+                    this.studyTree.setSelectionPath(firstPath);
+                    return this.studyTree.getLastSelectedPathComponent();
+                }
+            }
         }
         return null;
+    }
+    
+    private void saveStudy() {
+        Study rootStudy = (Study)treeModel.getRoot();
+        rootStudy.studyLoader.save(rootStudy);
     }
     
     private void copyCurrentStudy() {
@@ -315,7 +337,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private void loadStudy() {
         //Save the current Study
         if(this.currentStudy.studyLoader != null)
-            this.currentStudy.studyLoader.save(currentStudy);
+            this.saveStudy();
         
         this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int fcReturn = fileChooser.showDialog(this, null);
@@ -327,12 +349,20 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             this.currentStudy = newLoader.execute();
             this.currentStudy.studyLoader = newLoader;
             this.treeModel.setRootStudy(currentStudy);
+         
+            if(currentStudy.selectedIndex == -1) {
+               Object selectedElement = this.selectFirstElement(currentStudy);
+               int selectedRow = treeModel.getRowOfElement(selectedElement, currentStudy);
+               Object parent = treeModel.getParent((StudyElement) selectedElement, currentStudy);
+               currentStudy.selectedIndex = treeModel.getIndexOfChild(parent, selectedElement); 
+            }
+            else {
+                Object selectedElement = treeModel.getChild(currentStudy, currentStudy.selectedIndex);
+                int selectedRow = treeModel.getRowOfElement(selectedElement, (Study)treeModel.getRoot());
+                TreePath selectedImagePath = studyTree.getPathForRow(selectedRow);
+                studyTree.setSelectionPath(selectedImagePath);
+            }
             
-            TreePath selectedImage = this.studyTree.getPathForRow(this.currentStudy.selectedIndex + 1);
-            if(selectedImage != null)
-                this.studyTree.setSelectionPath(selectedImage);
-            else
-                this.selectFirstElement();
             this.displayModeButton.setEnabled(true);
         }
     }
@@ -340,7 +370,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private void selectPreviousElement() {
         int[] selectedRow = studyTree.getSelectionRows();
         if(selectedRow.length == 0)
-            this.selectFirstElement();
+            this.selectFirstElement(currentStudy);
         else if(selectedRow[0] > 1) {
             TreePath selectionPath = studyTree.getPathForRow(--selectedRow[0]);
             studyTree.setSelectionPath(selectionPath);
@@ -351,13 +381,12 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         int[] selectedRow = studyTree.getSelectionRows();
         int rowCount = studyTree.getRowCount();
         if(selectedRow.length == 0)
-            this.selectFirstElement();
+            this.selectFirstElement(currentStudy);
         else if(selectedRow[0] < rowCount) {
             TreePath selectionPath = studyTree.getPathForRow(++selectedRow[0]);
             studyTree.setSelectionPath(selectionPath);
         }
     }
-    
     private Study currentStudy;
     private StudyTreeModel treeModel;
     private JFileChooser fileChooser = new JFileChooser();

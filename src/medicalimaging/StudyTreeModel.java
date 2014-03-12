@@ -91,4 +91,66 @@ public class StudyTreeModel implements TreeModel{
         this.rootStudy = study;
         this.valueForPathChanged(new TreePath(this.rootStudy), this.rootStudy);
     }
+    
+    public Object getParent(StudyElement child, Study startElement) {
+        for(int i = 0; i < startElement.getElementCount(); i++) {
+            StudyElement currentElement = startElement.getElement(i);
+            if(currentElement instanceof Study) {
+                Object returnElement = this.getParent(child, (Study)currentElement);
+                if(returnElement != null)
+                    return returnElement;
+            }
+            else {
+                if(currentElement == child)
+                    return startElement;
+            }
+        }
+        return null;
+    }
+    
+    public int getNumRowsForElement(Study start) {
+        int rowCounter = 0;
+        for(int i = 0; i < start.getElementCount(); i++) {
+            Object currentElement = start.getElement(i);
+            rowCounter++;
+            if(!this.isLeaf(currentElement)) {
+                rowCounter += this.getNumRowsForElement((Study)currentElement);
+            }
+        }
+        return rowCounter; 
+    }
+    
+    public int getRowOfElement(Object element, Study start) {
+        int rowCounter = 0;
+        
+        //Check if it root.
+        if(element == start)
+            return 0;
+        
+        for(int i = 0; i < start.getElementCount(); i++) {
+            Object currentElement = start.getElement(i);
+            System.out.println(currentElement.toString());
+            rowCounter++;
+            if(currentElement == element)
+                return rowCounter;
+            else if(!this.isLeaf(currentElement)) {
+                int checkSubStudy = this.getRowOfElement(element, (Study)currentElement);
+                if(checkSubStudy != -1)
+                    return checkSubStudy;
+                else
+                    rowCounter += this.getNumRowsForElement((Study) currentElement);
+            }
+        }
+        return -1;
+    }
+    
+    public int getImageCountForParent(Study study) {
+        int counter = 0;
+        for(int i = 0; i < this.getChildCount(study); i++) {
+            Object currentElement = this.getChild(study, i);
+            if(this.isLeaf(currentElement))
+                counter++;
+        }
+        return counter;
+    }
 }

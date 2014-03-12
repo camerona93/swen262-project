@@ -62,6 +62,13 @@ public class LocalStudyLoader implements StudyLoader{
             ObjectOutputStream output = new ObjectOutputStream(fileOut);
             output.writeObject(saveStudy);
             output.close();
+            
+            //Look for substudies
+            for(int i = 0; i < saveStudy.getElementCount(); i++) {
+                StudyElement currentElement = saveStudy.getElement(i);
+                if(currentElement instanceof Study)
+                    ((Study)currentElement).studyLoader.save((Study)currentElement);
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -70,28 +77,7 @@ public class LocalStudyLoader implements StudyLoader{
     
     public boolean copyStudy(Study copyStudy, String copyPath){
         this.save(copyStudy);
-        
-        File rootDir = new File(this.loadPath);
-        
-        File[] subFiles = rootDir.listFiles();
-        for(File currentFile : subFiles) {
-            FileChannel inputChannel = null;
-            FileChannel outputChannel = null;
-            try {
-                if(!currentFile.isDirectory()) {
-                    inputChannel = new FileInputStream(currentFile.getAbsoluteFile()).getChannel();
-                    outputChannel = new FileOutputStream(copyPath + "/" + this.getFileName(currentFile.getAbsolutePath())).getChannel();
-                    outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-                    
-                    inputChannel.close();
-                    outputChannel.close();
-                }
-            }
-            catch(IOException e) {
-                return false;
-            }
-        }
-        return true;
+        return this.copyFiles(loadPath, copyPath);
     }
     
     private String getFileName(String file) {
@@ -126,5 +112,35 @@ public class LocalStudyLoader implements StudyLoader{
             ".jpeg",
             ".jpg"
         };
+    }
+    
+    private boolean copyFiles(String sourcePath, String copyPath) {
+        File rootDir = new File(sourcePath);
+        
+        File[] subFiles = rootDir.listFiles();
+        for(File currentFile : subFiles) {
+            FileChannel inputChannel = null;
+            FileChannel outputChannel = null;
+            try {
+                if(!currentFile.isDirectory()) {
+                    inputChannel = new FileInputStream(currentFile.getAbsoluteFile()).getChannel();
+                    outputChannel = new FileOutputStream(copyPath + "/" + this.getFileName(currentFile.getAbsolutePath())).getChannel();
+                    outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+                    
+                    inputChannel.close();
+                    outputChannel.close();
+                }
+                
+                else {
+                    File newDir = new File(copyPath + "/" + currentFile.getName());
+                    newDir.mkdirs();
+                    return copyFiles(currentFile.getAbsolutePath(), copyPath + "/" + currentFile.getName());
+                }
+            }
+            catch(IOException e) {
+                return false;
+            }
+        }
+        return true;
     }
 }
