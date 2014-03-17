@@ -73,7 +73,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         for(MedicalImage loadImage : loadImages) {
             int imageWidth = this.imagePanel.getWidth() / gridDivider;
             int imageHeight = this.imagePanel.getHeight() / gridDivider;
-            ImageIcon tempIcon = new ImageIcon(loadImage.imagePath);
+            ImageIcon tempIcon = loadImage.loadImage();
             Image image = tempIcon.getImage();
             Image scaledImage = image.getScaledInstance(imageWidth, imageHeight, 0);
             Icon imageIcon = new ImageIcon(scaledImage);

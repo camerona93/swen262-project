@@ -10,14 +10,17 @@ import javax.swing.ImageIcon;
 
 
 /**
+ *
  * @author ericlee
  */
-public abstract class MedicalImage extends StudyElement{
-    public String imagePath;
-    
-    public abstract ImageIcon loadImage();
-    
-    public String toString() {
-        return this.imagePath.substring(this.imagePath.lastIndexOf("/") + 1);
+public class StandardImage extends MedicalImage{
+
+    public StandardImage(String imagePath) {
+        this.imagePath = imagePath;
     }
+    @Override
+    public ImageIcon loadImage() {
+        return new ImageIcon(this.imagePath);
+    }
+    
 }

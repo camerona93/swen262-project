@@ -42,7 +42,11 @@ public class LocalStudyLoader implements StudyLoader{
         //Loop through all the files in the directory and add them to the study
         for(File currentFile : subFiles) {
             if(!currentFile.isDirectory() && this.fileSupported(currentFile)) {
-                returnStudy.addElement(new MedicalImage(currentFile.getAbsolutePath()));
+                String fileType = this.getFileType(currentFile.getName());
+                if(fileType.equals(".acr"))
+                    returnStudy.addElement(new AcrImage(currentFile.getAbsolutePath()));
+                else
+                    returnStudy.addElement(new StandardImage(currentFile.getAbsolutePath()));
             }
             else if(currentFile.isDirectory()){
                 //Detects a study within a study
@@ -118,9 +122,13 @@ public class LocalStudyLoader implements StudyLoader{
      */
     private boolean fileSupported(File file) {
         String fileName = file.getName();
-        int fileTypeIndex = fileName.lastIndexOf(".");
-        String fileType = fileName.substring(fileTypeIndex);
+        String fileType = this.getFileType(fileName);
         return Arrays.asList(this.getSupportedFileTypes()).contains(fileType);
+    }
+    
+    private String getFileType(String fileName) {
+        int fileTypeIndex = fileName.lastIndexOf(".");
+        return fileName.substring(fileTypeIndex);
     }
     
     /**
@@ -130,7 +138,8 @@ public class LocalStudyLoader implements StudyLoader{
     private String[] getSupportedFileTypes() {
         return new String[]{
             ".jpeg",
-            ".jpg"
+            ".jpg",
+            ".acr"
         };
     }
     
