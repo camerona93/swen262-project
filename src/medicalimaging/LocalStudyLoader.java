@@ -36,6 +36,7 @@ public class LocalStudyLoader implements StudyLoader{
         
         Study studySettings = this.loadSettings();
         if(studySettings != null) {
+            System.out.println("Load study index: " + studySettings.selectedIndex);
             returnStudy.displayMode = studySettings.displayMode;
             returnStudy.selectedIndex = studySettings.selectedIndex;
         }
