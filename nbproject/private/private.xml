@@ -5,9 +5,8 @@
         <group>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/LocalStudyLoader.java</file>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/StandardImage.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/AcrImage.java</file>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/MainFrame.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/MedicalImage.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/StudyTreeModel.java</file>
         </group>
     </open-files>
 </project-private>
