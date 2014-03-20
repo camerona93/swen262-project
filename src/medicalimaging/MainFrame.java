@@ -107,7 +107,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         else {
             MedicalImage selectedImage = (MedicalImage) this.studyTree.getLastSelectedPathComponent();
             if(selectedImage == null){
-                selectedImage = (MedicalImage) this.selectFirstElement(currentStudy);
+                selectedImage = (MedicalImage)selectCurrentStudySavedIndex();
             }
             
             //Save selected index
@@ -322,6 +322,23 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         return null;
     }
     
+    private Object selectCurrentStudySavedIndex() {
+        Study currentStudy = getCurrentStudy();
+        Object selectedElement;
+        if(currentStudy.selectedIndex == -1) {
+               selectedElement = this.selectFirstElement(currentStudy);
+               Object parent = treeModel.getParent((StudyElement) selectedElement, currentStudy);
+               currentStudy.selectedIndex = treeModel.getIndexOfChild(parent, selectedElement);
+        }
+        else {
+               selectedElement = treeModel.getChild(currentStudy, currentStudy.selectedIndex);
+               int selectedRow = treeModel.getRowOfElement(selectedElement, (Study)treeModel.getRoot());
+               TreePath selectedImagePath = studyTree.getPathForRow(selectedRow);
+               studyTree.setSelectionPath(selectedImagePath);
+        }
+        return selectedElement;
+    }
+    
     /**
      * Saves all the studies loaded within the frame
      */
@@ -370,19 +387,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             Study loadStudy = newLoader.execute();
             loadStudy.studyLoader = newLoader;
             this.treeModel.setRootStudy(loadStudy);
-         
-            if(loadStudy.selectedIndex == -1) {
-               Object selectedElement = this.selectFirstElement(loadStudy);
-               Object parent = treeModel.getParent((StudyElement) selectedElement, loadStudy);
-               loadStudy.selectedIndex = treeModel.getIndexOfChild(parent, selectedElement); 
-            }
-            else {
-                Object selectedElement = treeModel.getChild(loadStudy, loadStudy.selectedIndex);
-                int selectedRow = treeModel.getRowOfElement(selectedElement, (Study)treeModel.getRoot());
-                TreePath selectedImagePath = studyTree.getPathForRow(selectedRow);
-                studyTree.setSelectionPath(selectedImagePath);
-            }
-            
+            selectCurrentStudySavedIndex();
             this.displayModeButton.setEnabled(true);
         }
     }
