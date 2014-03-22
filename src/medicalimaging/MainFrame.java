@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -21,7 +23,7 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author ericlee
  */
-public class MainFrame extends javax.swing.JFrame{
+public class MainFrame extends javax.swing.JFrame implements TreeSelectionListener{
 
     /**
      * Creates new form MainFrame
@@ -31,6 +33,7 @@ public class MainFrame extends javax.swing.JFrame{
         
         //Configure study tree
         studyTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        studyTree.addTreeSelectionListener(this);
         displayModeButton.setEnabled(false);
         
         //Configure image panel
@@ -68,6 +71,10 @@ public class MainFrame extends javax.swing.JFrame{
     
     protected void setTreeModel(TreeModel model) {
         studyTree.setModel(model);
+    }
+    
+    protected void refreshImages() {
+        this.valueChanged(null);
     }
     
     /**
@@ -226,6 +233,16 @@ public class MainFrame extends javax.swing.JFrame{
         delegate.displayModeButtonPressed();
     }//GEN-LAST:event_displayButtonPressed
 
+    /**
+     * Executes when the value of the JTree is changed
+     * TODO: This method should be cleaned up and sized down.
+     * @param e 
+     */
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        delegate.selectedImageChanged((StudyElement)studyTree.getLastSelectedPathComponent());
+    }
+    
     protected MainFrameViewProtocol delegate;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyButton;

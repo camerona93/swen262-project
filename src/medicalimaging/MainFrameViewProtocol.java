@@ -16,4 +16,5 @@ public interface MainFrameViewProtocol {
     void copyButtonPressed();
     void nextButtonPressed();
     void previousButtonPressed();
+    void selectedImageChanged(StudyElement selectedElement);
 }

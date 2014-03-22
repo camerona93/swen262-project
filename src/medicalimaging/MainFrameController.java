@@ -19,7 +19,7 @@ import javax.swing.tree.TreePath;
  *
  * @author ericlee
  */
-public class MainFrameController implements TreeSelectionListener, MainFrameViewProtocol{
+public class MainFrameController implements MainFrameViewProtocol{
     private StudyTreeModel treeModel;
     private JFileChooser fileChooser = new JFileChooser();
     private MainFrame view;
@@ -30,7 +30,6 @@ public class MainFrameController implements TreeSelectionListener, MainFrameView
         
         treeModel = new StudyTreeModel(new Study("Study"));
         view.setTreeModel(treeModel);
-        view.studyTree.addTreeSelectionListener(this);
         view.setVisible(true);
         
         //Add window close listener
@@ -42,19 +41,48 @@ public class MainFrameController implements TreeSelectionListener, MainFrameView
         });
     }
     
-    /**
-     * Executes when the value of the JTree is changed
-     * TODO: This method should be cleaned up and sized down.
-     * @param e 
-     */
     @Override
-    public void valueChanged(TreeSelectionEvent e) {
+    public void displayModeButtonPressed() {
         Study currentStudy = getCurrentStudy();
-        if(view.studyTree.getLastSelectedPathComponent() instanceof Study) {
+        if(currentStudy.displayMode == Study.DISPLAY_MODE_1x1) {
+            view.displayModeButton.setText("1x1");
+            currentStudy.displayMode = Study.DISPLAY_MODE_2x2;
+        }
+        else {
+            view.displayModeButton.setText("2x2");
+            currentStudy.displayMode = Study.DISPLAY_MODE_1x1;
+        }
+        view.refreshImages();
+    }
+
+    @Override
+    public void loadStudyButtonPressed() {
+        loadStudy();
+    }
+
+    @Override
+    public void copyButtonPressed() {
+        copyCurrentStudy();
+    }
+
+    @Override
+    public void nextButtonPressed() {
+        selectNextElement();
+    }
+
+    @Override
+    public void previousButtonPressed() {
+        selectPreviousElement();
+    }
+    
+    @Override
+    public void selectedImageChanged(StudyElement selectedElement) {
+        Study currentStudy = getCurrentStudy();
+        if(selectedElement instanceof Study) {
             this.selectFirstElement(currentStudy);
         }
         else {
-            MedicalImage selectedImage = (MedicalImage) view.studyTree.getLastSelectedPathComponent();
+            MedicalImage selectedImage = (MedicalImage)selectedElement;
             if(selectedImage == null){
                 selectedImage = (MedicalImage)selectCurrentStudySavedIndex();
             }
@@ -90,40 +118,6 @@ public class MainFrameController implements TreeSelectionListener, MainFrameView
             }
             view.loadImages(loadImages);
         }
-    }
-    
-    @Override
-    public void displayModeButtonPressed() {
-        Study currentStudy = getCurrentStudy();
-        if(currentStudy.displayMode == Study.DISPLAY_MODE_1x1) {
-            view.displayModeButton.setText("1x1");
-            currentStudy.displayMode = Study.DISPLAY_MODE_2x2;
-        }
-        else {
-            view.displayModeButton.setText("2x2");
-            currentStudy.displayMode = Study.DISPLAY_MODE_1x1;
-        }
-        this.valueChanged(null);
-    }
-
-    @Override
-    public void loadStudyButtonPressed() {
-        loadStudy();
-    }
-
-    @Override
-    public void copyButtonPressed() {
-        copyCurrentStudy();
-    }
-
-    @Override
-    public void nextButtonPressed() {
-        selectNextElement();
-    }
-
-    @Override
-    public void previousButtonPressed() {
-        selectPreviousElement();
     }
     
     /**
