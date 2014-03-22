@@ -81,6 +81,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
         
         this.imagePanel.revalidate();
+        System.out.println("Our imagePanel is: " + this.imagePanel.getHeight());
     }
     
     /**
@@ -260,7 +261,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                         .addComponent(studyTreePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(displayModeButton)))
                 .addContainerGap())
@@ -385,7 +386,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             String studyPath = selectedFile.getAbsolutePath();
             StudyLoader newLoader = new LocalStudyLoader(studyPath);
             Study loadStudy = newLoader.execute();
-            loadStudy.studyLoader = newLoader;
             this.treeModel.setRootStudy(loadStudy);
             selectCurrentStudySavedIndex();
             this.displayModeButton.setEnabled(true);

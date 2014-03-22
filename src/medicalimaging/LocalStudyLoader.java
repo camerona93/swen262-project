@@ -57,6 +57,7 @@ public class LocalStudyLoader implements StudyLoader{
                 returnStudy.addElement(subStudy);
             }
         }
+        returnStudy.studyLoader = this;
         return returnStudy;
     }
     
