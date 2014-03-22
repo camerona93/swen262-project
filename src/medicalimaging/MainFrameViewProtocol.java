@@ -5,17 +5,15 @@
  */
 
 package medicalimaging;
+
 /**
  *
  * @author ericlee
  */
-public class MedicalImaging {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {        
-        MainFrameController controller = new MainFrameController();
-    }
-    
+public interface MainFrameViewProtocol {
+    void displayModeButtonPressed();
+    void loadStudyButtonPressed();
+    void copyButtonPressed();
+    void nextButtonPressed();
+    void previousButtonPressed();
 }
