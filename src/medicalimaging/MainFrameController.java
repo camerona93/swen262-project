@@ -118,6 +118,14 @@ public class MainFrameController implements MainFrameViewProtocol{
         }
     }
     
+    @Override
+    public void mouseScrollOnImage(int magnitude, int indexLocation) {
+        if(magnitude > 0)
+            selectNextElement();
+        else
+            selectPreviousElement();
+    }
+    
     /**
      * Selects the first element of a given study
      * @param parent

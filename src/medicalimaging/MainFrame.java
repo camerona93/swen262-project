@@ -10,7 +10,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -23,7 +26,7 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author ericlee
  */
-public class MainFrame extends javax.swing.JFrame implements TreeSelectionListener{
+public class MainFrame extends javax.swing.JFrame implements TreeSelectionListener, MouseWheelListener{
 
     /**
      * Creates new form MainFrame
@@ -34,6 +37,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         //Configure study tree
         studyTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         studyTree.addTreeSelectionListener(this);
+        this.addMouseWheelListener(this);
         displayModeButton.setEnabled(false);
         
         //Configure image panel
@@ -84,6 +88,24 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         Component[] components = this.imagePanel.getComponents();
         for(Component curComponent : components) {
             this.imagePanel.remove(curComponent);
+        }
+    }
+    
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        int mouseX = e.getX();
+        int mouseY = e.getY();
+        int panelX = imagePanel.getX();
+        int panelY = imagePanel.getY();
+        
+        if((mouseX > panelX && mouseX < panelX + imagePanel.getWidth()) && (mouseY > panelY && mouseY < imagePanel.getHeight())) {
+            int notches = e.getWheelRotation();
+            Component[] components = imagePanel.getComponents();
+            Component hoverComponent = imagePanel.getComponentAt(mouseX, mouseY);
+            
+            int hoverIndex = Arrays.asList(components).indexOf(hoverComponent);
+            
+            delegate.mouseScrollOnImage(notches, hoverIndex);
         }
     }
     
