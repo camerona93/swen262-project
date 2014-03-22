@@ -85,8 +85,10 @@ public class MainFrameController implements MainFrameViewProtocol{
                 selectedImage = (MedicalImage)selectCurrentStudySavedIndex();
             }
             
+            view.studyTree.scrollPathToVisible(view.studyTree.getPathForRow(treeModel.getRowOfElement(selectedImage, currentStudy)));
+            
             //Save selected index
-            int selectedIndex = this.treeModel.getIndexOfChild(currentStudy, selectedImage);
+            int selectedIndex = treeModel.getIndexOfChild(currentStudy, selectedImage);
             currentStudy.selectedIndex = selectedIndex;
             
             //Create list of images to display
