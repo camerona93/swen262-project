@@ -18,4 +18,5 @@ public interface MainFrameViewProtocol {
     void previousButtonPressed();
     void selectedImageChanged(StudyElement selectedElement);
     void mouseScrollOnImage(int magnitude, int indexLocation);
+    void undoButtonPressed();
 }

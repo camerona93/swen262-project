@@ -127,6 +127,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         copyButton = new javax.swing.JButton();
         previousButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
+        undoButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -196,6 +197,17 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(nextButton);
 
+        undoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/undo.gif"))); // NOI18N
+        undoButton.setFocusable(false);
+        undoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        undoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        undoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                undoButtonActionPerformed(evt);
+            }
+        });
+        toolbar.add(undoButton);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -204,7 +216,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(studyTreePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+                    .addComponent(studyTreePanel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -255,6 +267,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         delegate.displayModeButtonPressed();
     }//GEN-LAST:event_displayButtonPressed
 
+    private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
+        delegate.undoButtonPressed();
+    }//GEN-LAST:event_undoButtonActionPerformed
+
     /**
      * Executes when the value of the JTree is changed
      * TODO: This method should be cleaned up and sized down.
@@ -263,6 +279,13 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     @Override
     public void valueChanged(TreeSelectionEvent e) {
         delegate.selectedImageChanged((StudyElement)studyTree.getLastSelectedPathComponent());
+    }
+    
+    public void updateGUIForState(int state) {
+        if(state == Study.DISPLAY_MODE_1x1)
+            displayModeButton.setText("1x1");
+        else
+            displayModeButton.setText("2x2");
     }
     
     protected MainFrameViewProtocol delegate;
@@ -276,6 +299,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     protected javax.swing.JTree studyTree;
     private javax.swing.JScrollPane studyTreePanel;
     private javax.swing.JToolBar toolbar;
+    private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
 
 }

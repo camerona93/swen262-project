@@ -20,6 +20,7 @@ import javax.swing.tree.TreePath;
 public class MainFrameController implements MainFrameViewProtocol{
     private StudyTreeModel treeModel;
     private JFileChooser fileChooser = new JFileChooser();
+    private ArrayList<StudyUndoableOperation> operationStack = new ArrayList<StudyUndoableOperation>();
     private MainFrame view;
     
     public MainFrameController() {
@@ -42,14 +43,29 @@ public class MainFrameController implements MainFrameViewProtocol{
     @Override
     public void displayModeButtonPressed() {
         Study currentStudy = getCurrentStudy();
-        if(currentStudy.displayMode == Study.DISPLAY_MODE_1x1) {
-            view.displayModeButton.setText("1x1");
-            currentStudy.displayMode = Study.DISPLAY_MODE_2x2;
-        }
-        else {
-            view.displayModeButton.setText("2x2");
-            currentStudy.displayMode = Study.DISPLAY_MODE_1x1;
-        }
+        int newDisplayMode;
+        if(currentStudy.displayMode == Study.DISPLAY_MODE_1x1)
+            newDisplayMode = Study.DISPLAY_MODE_2x2;
+        else
+            newDisplayMode = Study.DISPLAY_MODE_1x1;
+        
+        //Update the model
+        DisplayModeStudyUndoableOperation operation = new DisplayModeStudyUndoableOperation(currentStudy, newDisplayMode) {
+            @Override
+            void onExecute() {
+                view.updateGUIForState(this.currentMode);
+            }
+            @Override
+            void onUndo() {
+                System.out.println(this.currentMode + " " + this.previousMode);
+                view.updateGUIForState(this.previousMode);
+                view.refreshImages();
+            }
+        };
+        operation.execute();
+        currentStudy.undoStack.add(operation);
+
+        
         view.refreshImages();
     }
 
@@ -116,6 +132,9 @@ public class MainFrameController implements MainFrameViewProtocol{
                     }
                 }
             }
+            
+            //Update GUI
+            view.updateGUIForState(currentStudy.displayMode);
             view.loadImages(loadImages);
         }
     }
@@ -149,6 +168,15 @@ public class MainFrameController implements MainFrameViewProtocol{
             }
         }
         return null;
+    }
+    
+    @Override
+    public void undoButtonPressed() {
+        Study currentStudy = getCurrentStudy();
+        if(currentStudy.undoStack.size() > 0) {
+            System.out.println("FIRE");
+            currentStudy.undoStack.remove(0).undo();
+        }
     }
     
     private Object selectCurrentStudySavedIndex() {
@@ -216,7 +244,10 @@ public class MainFrameController implements MainFrameViewProtocol{
             this.treeModel.setRootStudy(loadStudy);
             selectCurrentStudySavedIndex();
             view.displayModeButton.setEnabled(true);
+            view.updateGUIForState(loadStudy.displayMode);
         }
+        
+        //Update view
     }
     
     /**
