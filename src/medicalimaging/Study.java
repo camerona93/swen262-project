@@ -61,6 +61,16 @@ public class Study extends StudyElement{
         }
     }
     
+    public int getImageCount() {
+        int counter = 0;
+        for(int i = 0; i < getElementCount(); i++) {
+            StudyElement currentElement = getElement(i);
+            if(currentElement instanceof MedicalImage)
+                counter++;
+        }
+        return counter;
+    }
+    
     public String toString() {
         return this.name;
     }

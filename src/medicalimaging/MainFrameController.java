@@ -112,7 +112,7 @@ public class MainFrameController implements MainFrameViewProtocol{
             if(currentStudy.displayMode == Study.DISPLAY_MODE_1x1)
                 loadImages.add(selectedImage);
             else if(currentStudy.displayMode == Study.DISPLAY_MODE_2x2) {
-                int childCount = this.treeModel.getImageCountForParent(currentStudy);
+                int childCount = currentStudy.getImageCount();
                 System.out.println(childCount);
                 if(selectedIndex > -1) {
                     if(childCount <= 4) {

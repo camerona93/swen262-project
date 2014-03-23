@@ -149,14 +149,4 @@ public class StudyTreeModel implements TreeModel{
         }
         return -1;
     }
-    
-    public int getImageCountForParent(Study study) {
-        int counter = 0;
-        for(int i = 0; i < this.getChildCount(study); i++) {
-            Object currentElement = this.getChild(study, i);
-            if(this.isLeaf(currentElement))
-                counter++;
-        }
-        return counter;
-    }
 }

@@ -59,7 +59,6 @@ public class AcrImage extends MedicalImage{
 		    pixelHigh = imageFile.read();
 		    pixelLow = imageFile.read();
 		    pixel = pixelHigh << 4 | pixelLow >> 4;
-		    
 		    sliceBuffer.setRGB( j, i,
 				      pixel << 16 | pixel << 8 | pixel);
 
