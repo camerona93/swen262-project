@@ -26,7 +26,7 @@ public class FrontStudyLoader extends ReconStudyLoader{
             for(int y = 0; y < render[0].length; y++) {
                 int yPoint = (render[0].length - 1) - y;
                 for(int x = 0; x < render.length; x++) {
-                    bfImage.setRGB(x, y, render[x][y][z]);
+                    bfImage.setRGB(x, y, render[x][yPoint][z]);
                 }
             }
             MedicalImage image = new PreLoadedImage(new ImageIcon(bfImage));
