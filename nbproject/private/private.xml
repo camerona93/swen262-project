@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/MainFrameController.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/Study.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/ImageReconUtils.java</file>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/AcrImage.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/StudyTreeModel.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/ProfileStudyLoader.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/MedicalImage.java</file>
         </group>
     </open-files>
 </project-private>

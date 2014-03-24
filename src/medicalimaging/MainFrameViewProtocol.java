@@ -11,7 +11,7 @@ package medicalimaging;
  * @author ericlee
  */
 public interface MainFrameViewProtocol {
-    void displayModeButtonPressed();
+    void displayModeChanged(int displayMode);
     void loadStudyButtonPressed();
     void copyButtonPressed();
     void nextButtonPressed();

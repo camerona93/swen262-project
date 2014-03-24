@@ -20,14 +20,17 @@ public class Study extends StudyElement{
     protected int selectedIndex;
     protected transient StudyLoader studyLoader;
     protected transient ArrayList<StudyUndoableOperation> undoStack;
+    protected transient ArrayList<Study> reconStudies;
     
     public static final int DISPLAY_MODE_1x1 = 1;
     public static final int DISPLAY_MODE_2x2 = 2;
+    public static final int DISPLAY_MODE_RECON = 3;
     
     public Study(String _name) {
         name = _name;
         studyElements = new ArrayList<StudyElement>();
         undoStack = new ArrayList<StudyUndoableOperation>();
+        reconStudies = new ArrayList<Study>();
         displayMode = 1;
         selectedIndex = -1;
         indexOfFirstStudy = 0;

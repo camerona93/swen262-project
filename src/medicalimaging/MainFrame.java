@@ -8,6 +8,7 @@ package medicalimaging;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
@@ -38,7 +39,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         studyTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         studyTree.addTreeSelectionListener(this);
         this.addMouseWheelListener(this);
-        displayModeButton.setEnabled(false);
         
         //Configure image panel
         imagePanel.setLayout(new GridLayout(0,1));
@@ -53,12 +53,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
      */
     protected void loadImages(ArrayList<MedicalImage> loadImages) {
         this.clearImagePanel();
-        int gridSize = (int)Math.ceil(Math.sqrt(loadImages.size()));
+        double  sqrt = Math.sqrt(loadImages.size());
+        int gridSize = (int)Math.ceil(sqrt);
         this.imagePanel.setLayout(new GridLayout(gridSize, gridSize));
         
-        /*int gridDivider = 1;
-        if(getCurrentStudy().displayMode == Study.DISPLAY_MODE_2x2)
-            gridDivider = 2;*/
+        
         for(MedicalImage loadImage : loadImages) {
             int imageWidth = this.imagePanel.getWidth() / gridSize;//gridDivider;
             int imageHeight = this.imagePanel.getHeight() / gridSize;//gridDivider;
@@ -69,6 +68,16 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             JLabel imageLabel = new JLabel(imageIcon);
             this.imagePanel.add(imageLabel);
         }
+        
+        //Load placeholders
+        /*for(int i = 0; i < Math.pow(gridSize, 2) - loadImages.size(); i++) {
+            ImageIcon tempIcon = loadImages.get(0).loadImage();
+            Image image = tempIcon.getImage();
+            Image scaledImage = image.getScaledInstance(imagePanel.getWidth() / gridSize, imagePanel.getHeight() / gridSize, 0);
+            Icon imageIcon = new ImageIcon(scaledImage);
+            JLabel imageLabel = new JLabel(imageIcon);
+            this.imagePanel.add(imageLabel);
+        }*/
         
         this.imagePanel.revalidate();
     }
@@ -101,10 +110,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         if((mouseX > panelX && mouseX < panelX + imagePanel.getWidth()) && (mouseY > panelY && mouseY < imagePanel.getHeight())) {
             int notches = e.getWheelRotation();
             Component[] components = imagePanel.getComponents();
-            Component hoverComponent = imagePanel.getComponentAt(mouseX, mouseY);
+            Component hoverComponent = imagePanel.getComponentAt(e.getPoint());
             
+            System.out.println(hoverComponent);
             int hoverIndex = Arrays.asList(components).indexOf(hoverComponent);
-            
             delegate.mouseScrollOnImage(notches, hoverIndex);
         }
     }
@@ -121,13 +130,13 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         studyTreePanel = new javax.swing.JScrollPane();
         studyTree = new javax.swing.JTree();
         imagePanel = new javax.swing.JPanel();
-        displayModeButton = new javax.swing.JButton();
         toolbar = new javax.swing.JToolBar();
         openButton = new javax.swing.JButton();
         copyButton = new javax.swing.JButton();
         previousButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         undoButton = new javax.swing.JButton();
+        displayModeSelect = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -137,19 +146,12 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
+            .addGap(0, 763, Short.MAX_VALUE)
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-
-        displayModeButton.setText("4x4");
-        displayModeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                displayButtonPressed(evt);
-            }
-        });
 
         toolbar.setRollover(true);
 
@@ -208,6 +210,14 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(undoButton);
 
+        displayModeSelect.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1x1", "2x2", "Recon"}));
+        displayModeSelect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                displayModeSelectActionPerformed(evt);
+            }
+        });
+        toolbar.add(displayModeSelect);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,29 +228,19 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                     .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(studyTreePanel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(displayModeButton)
-                        .addGap(24, 24, 24))))
+                .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(5, 5, 5)
-                        .addComponent(studyTreePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(displayModeButton)))
+                        .addComponent(studyTreePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -263,14 +263,20 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         delegate.nextButtonPressed();
     }//GEN-LAST:event_nextButtonActionPerformed
 
-    private void displayButtonPressed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayButtonPressed
-        delegate.displayModeButtonPressed();
-    }//GEN-LAST:event_displayButtonPressed
-
     private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
         delegate.undoButtonPressed();
     }//GEN-LAST:event_undoButtonActionPerformed
 
+    private void displayModeSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayModeSelectActionPerformed
+        String selectedItem = (String)displayModeSelect.getSelectedItem();
+        int displayMode = Study.DISPLAY_MODE_1x1;
+        if(selectedItem.equals("2x2"))
+            displayMode = Study.DISPLAY_MODE_2x2;
+        else if(selectedItem.equals("Recon"))
+            displayMode = Study.DISPLAY_MODE_RECON;
+        delegate.displayModeChanged(displayMode);
+    }//GEN-LAST:event_displayModeSelectActionPerformed
+    
     /**
      * Executes when the value of the JTree is changed
      * TODO: This method should be cleaned up and sized down.
@@ -283,15 +289,17 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     
     public void updateGUIForState(int state) {
         if(state == Study.DISPLAY_MODE_1x1)
-            displayModeButton.setText("1x1");
+            displayModeSelect.setSelectedItem("1x1");
+        else if(state == Study.DISPLAY_MODE_2x2)
+            displayModeSelect.setSelectedItem("2x2");
         else
-            displayModeButton.setText("2x2");
+            displayModeSelect.setSelectedItem("Recon");
     }
     
     protected MainFrameViewProtocol delegate;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyButton;
-    protected javax.swing.JButton displayModeButton;
+    protected javax.swing.JComboBox displayModeSelect;
     private javax.swing.JPanel imagePanel;
     private javax.swing.JButton nextButton;
     private javax.swing.JButton openButton;
