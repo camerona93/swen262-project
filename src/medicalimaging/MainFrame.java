@@ -38,10 +38,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         //Configure study tree
         studyTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         studyTree.addTreeSelectionListener(this);
-        this.addMouseWheelListener(this);
         
         //Configure image panel
         imagePanel.setLayout(new GridLayout(0,1));
+        imagePanel.addMouseWheelListener(this);
+        //this.addMouseWheelListener(this);
         JLabel placeHolder = new JLabel("");
         placeHolder.setPreferredSize(new Dimension(imagePanel.getWidth(), imagePanel.getWidth()));
         imagePanel.add(placeHolder);
@@ -107,7 +108,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         int panelX = imagePanel.getX();
         int panelY = imagePanel.getY();
         
-        if((mouseX > panelX && mouseX < panelX + imagePanel.getWidth()) && (mouseY > panelY && mouseY < imagePanel.getHeight())) {
+        //if((mouseX > panelX && mouseX < panelX + imagePanel.getWidth()) && (mouseY > panelY && mouseY < imagePanel.getHeight())) {
             int notches = e.getWheelRotation();
             Component[] components = imagePanel.getComponents();
             Component hoverComponent = imagePanel.getComponentAt(e.getPoint());
@@ -115,7 +116,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             System.out.println(hoverComponent);
             int hoverIndex = Arrays.asList(components).indexOf(hoverComponent);
             delegate.mouseScrollOnImage(notches, hoverIndex);
-        }
+        //}
     }
     
     /**
