@@ -4,23 +4,22 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.imageTypes;
 
 import javax.swing.ImageIcon;
-
 
 /**
  *
  * @author ericlee
  */
-public class StandardImage extends MedicalImage{
-
-    public StandardImage(String imagePath) {
-        this.imagePath = imagePath;
-    }
-    @Override
-    public ImageIcon loadImage() {
-        return new ImageIcon(this.imagePath);
+public class PreLoadedImage extends MedicalImage{
+    private ImageIcon image;
+    
+    public PreLoadedImage(ImageIcon _image) {
+        image = _image;
     }
     
+    public ImageIcon loadImage() {
+        return image;
+    }
 }

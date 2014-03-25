@@ -4,11 +4,11 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.gui;
 
+import medicalimaging.imageTypes.MedicalImage;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
@@ -22,6 +22,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
+import medicalimaging.model.Study;
+import medicalimaging.model.StudyElement;
 
 /**
  *
@@ -70,17 +72,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             JLabel imageLabel = new JLabel(imageIcon);
             this.imagePanel.add(imageLabel);
         }
-        
-        //Load placeholders
-        /*for(int i = 0; i < Math.pow(gridSize, 2) - loadImages.size(); i++) {
-            ImageIcon tempIcon = loadImages.get(0).loadImage();
-            Image image = tempIcon.getImage();
-            Image scaledImage = image.getScaledInstance(imagePanel.getWidth() / gridSize, imagePanel.getHeight() / gridSize, 0);
-            Icon imageIcon = new ImageIcon(scaledImage);
-            JLabel imageLabel = new JLabel(imageIcon);
-            this.imagePanel.add(imageLabel);
-        }*/
-        
         imagePanel.revalidate();
         imagePanel.repaint();
     }
@@ -149,7 +140,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         imagePanel.setLayout(imagePanelLayout);
         imagePanelLayout.setHorizontalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 763, Short.MAX_VALUE)
+            .addGap(0, 643, Short.MAX_VALUE)
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,7 +149,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
 
         toolbar.setRollover(true);
 
-        openButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/open.gif"))); // NOI18N
+        openButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/images/open.gif"))); // NOI18N
         openButton.setFocusable(false);
         openButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         openButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -169,7 +160,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(openButton);
 
-        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/copy.gif"))); // NOI18N
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/images/copy.gif"))); // NOI18N
         copyButton.setFocusable(false);
         copyButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         copyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -180,7 +171,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(copyButton);
 
-        previousButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/previous.gif"))); // NOI18N
+        previousButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/images/previous.gif"))); // NOI18N
         previousButton.setFocusable(false);
         previousButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         previousButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -191,7 +182,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(previousButton);
 
-        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/next.gif"))); // NOI18N
+        nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/images/next.gif"))); // NOI18N
         nextButton.setFocusable(false);
         nextButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nextButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -202,7 +193,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(nextButton);
 
-        undoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/undo.gif"))); // NOI18N
+        undoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/medicalimaging/images/undo.gif"))); // NOI18N
         undoButton.setFocusable(false);
         undoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         undoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -243,7 +234,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(5, 5, 5)
-                        .addComponent(studyTreePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)))
+                        .addComponent(studyTreePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 

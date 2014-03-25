@@ -4,14 +4,13 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.model;
 
 /**
  *
  * @author ericlee
  */
-public interface StudyLoader {
-    public Study execute();
-    public void save(Study saveStudy);
-    public boolean copyStudy(Study copyStudy, String copyPath);
+public interface StudyUndoableOperation {
+    void execute();
+    void undo();
 }

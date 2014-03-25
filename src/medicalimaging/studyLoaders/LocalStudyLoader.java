@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.studyLoaders;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import medicalimaging.imageTypes.AcrImage;
+import medicalimaging.model.ImageReconUtils;
+import medicalimaging.imageTypes.StandardImage;
+import medicalimaging.model.Study;
+import medicalimaging.model.StudyElement;
 /**
  * Handles all interaction for saving, loading, and coping a study
  * @author ericlee
@@ -36,9 +41,8 @@ public class LocalStudyLoader implements StudyLoader{
         
         Study studySettings = this.loadSettings();
         if(studySettings != null) {
-            System.out.println("Load study index: " + studySettings.selectedIndex);
-            returnStudy.displayMode = studySettings.displayMode;
-            returnStudy.selectedIndex = studySettings.selectedIndex;
+            returnStudy.setDisplayMode(studySettings.getDisplayMode());
+            returnStudy.setSelectedIndex(studySettings.getSelectedIndex());
         }
         //Loop through all the files in the directory and add them to the study
         for(File currentFile : subFiles) {

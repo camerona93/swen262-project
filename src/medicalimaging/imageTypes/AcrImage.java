@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.imageTypes;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

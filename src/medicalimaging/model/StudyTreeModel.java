@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.model;
 
+import medicalimaging.imageTypes.MedicalImage;
 import java.util.ArrayList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;

@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.model;
 
 /**
  *
  * @author ericlee
  */
-public interface StudyUndoableOperation {
-    void execute();
-    void undo();
+public class StudyElement implements java.io.Serializable{
+    
 }

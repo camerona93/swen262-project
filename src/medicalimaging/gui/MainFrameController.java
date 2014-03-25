@@ -4,14 +4,22 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.gui;
 
+import medicalimaging.imageTypes.MedicalImage;
+import medicalimaging.studyLoaders.StudyLoader;
+import medicalimaging.studyLoaders.LocalStudyLoader;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.tree.TreePath;
+import medicalimaging.model.DisplayModeStudyUndoableOperation;
+import medicalimaging.model.Study;
+import medicalimaging.model.StudyElement;
+import medicalimaging.model.StudyTreeModel;
+import medicalimaging.model.StudyUndoableOperation;
 
 /**
  *
@@ -77,15 +85,15 @@ public class MainFrameController implements MainFrameViewProtocol{
             
             //Save selected index
             int selectedIndex = treeModel.getIndexOfChild(currentStudy, selectedImage);
-            currentStudy.selectedIndex = selectedIndex;
+            currentStudy.setSelectedIndex(selectedIndex);
             
             //Create list of images to display
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
-            if(currentStudy.displayMode == Study.DISPLAY_MODE_1x1) {
+            if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_1x1) {
                 loadImages.add(selectedImage);
                 System.out.println("DISPLAY MODE 1");
             }
-            else if(currentStudy.displayMode == Study.DISPLAY_MODE_2x2) {
+            else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_2x2) {
                 int childCount = currentStudy.getImageCount();
                 System.out.println(childCount);
                 if(selectedIndex > -1) {
@@ -106,18 +114,18 @@ public class MainFrameController implements MainFrameViewProtocol{
                     }
                 }
             }
-            else if(currentStudy.displayMode == Study.DISPLAY_MODE_RECON) {
+            else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
                 ArrayList<Study> reconStudies = currentStudy.reconStudies;
                 loadImages.add(selectedImage);
                 
                 for(int i = 0; i < reconStudies.size(); i++) {
                     Study reconStudy = reconStudies.get(i);
-                    loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.selectedIndex));
+                    loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.getSelectedIndex()));
                 }
             }
             
             //Update GUI
-            view.updateGUIForState(currentStudy.displayMode);
+            view.updateGUIForState(currentStudy.getDisplayMode());
             view.loadImages(loadImages);
         }
     }
@@ -125,18 +133,18 @@ public class MainFrameController implements MainFrameViewProtocol{
     @Override
     public void mouseScrollOnImage(int magnitude, int indexLocation) {
         Study currentStudy = getCurrentStudy();
-        if(currentStudy.displayMode == Study.DISPLAY_MODE_RECON) {
+        if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
             if(indexLocation == 0) {
                 mouseScrollTree(magnitude);
             }
             else {
                 Study reconStudy = currentStudy.reconStudies.get(indexLocation - 1);
-                if(magnitude > 0 && reconStudy.selectedIndex < reconStudy.getImageCount() - 1) {
-                    reconStudy.selectedIndex++;
+                if(magnitude > 0 && reconStudy.getSelectedIndex() < reconStudy.getImageCount() - 1) {
+                    reconStudy.setSelectedIndex(reconStudy.getSelectedIndex() + 1);
                     view.refreshImages();
                 }
-                else if(reconStudy.selectedIndex > 0) {
-                    reconStudy.selectedIndex--;
+                else if(reconStudy.getSelectedIndex() > 0) {
+                    reconStudy.setSelectedIndex(reconStudy.getSelectedIndex() - 1);
                     view.refreshImages();
                 }
             }
@@ -179,22 +187,19 @@ public class MainFrameController implements MainFrameViewProtocol{
     @Override
     public void undoButtonPressed() {
         Study currentStudy = getCurrentStudy();
-        if(currentStudy.undoStack.size() > 0) {
-            System.out.println("FIRE");
-            currentStudy.undoStack.remove(0).undo();
-        }
+        currentStudy.undoTask();
     }
     
     private Object selectCurrentStudySavedIndex() {
         Study currentStudy = getCurrentStudy();
         Object selectedElement;
-        if(currentStudy.selectedIndex == -1) {
+        if(currentStudy.getSelectedIndex() == -1) {
                selectedElement = this.selectFirstElement(currentStudy);
                Object parent = treeModel.getParent((StudyElement) selectedElement, currentStudy);
-               currentStudy.selectedIndex = treeModel.getIndexOfChild(parent, selectedElement);
+               currentStudy.setSelectedIndex(treeModel.getIndexOfChild(parent, selectedElement));
         }
         else {
-               selectedElement = treeModel.getChild(currentStudy, currentStudy.selectedIndex);
+               selectedElement = treeModel.getChild(currentStudy, currentStudy.getSelectedIndex());
                int selectedRow = treeModel.getRowOfElement(selectedElement, (Study)treeModel.getRoot());
                TreePath selectedImagePath = view.studyTree.getPathForRow(selectedRow);
                view.studyTree.setSelectionPath(selectedImagePath);
@@ -207,19 +212,18 @@ public class MainFrameController implements MainFrameViewProtocol{
         //Update the model
         DisplayModeStudyUndoableOperation operation = new DisplayModeStudyUndoableOperation(currentStudy, displayMode) {
             @Override
-            void onExecute() {
+            public void onExecute() {
                 view.updateGUIForState(currentMode);
-                System.out.println(currentMode);
                 view.refreshImages();
             }
             @Override
-            void onUndo() {
+            public void onUndo() {
                 view.updateGUIForState(previousMode);
                 view.refreshImages();
             }
         };
         operation.execute();
-        currentStudy.undoStack.add(operation);
+        currentStudy.addUndoTask(operation);
 
         
         view.refreshImages();
@@ -230,7 +234,6 @@ public class MainFrameController implements MainFrameViewProtocol{
      */
     private void saveStudy() {
         Study rootStudy = (Study)treeModel.getRoot();
-        System.out.println("Save Selected Index: " + rootStudy.selectedIndex);
         rootStudy.studyLoader.save(rootStudy);
     }
     
@@ -273,7 +276,7 @@ public class MainFrameController implements MainFrameViewProtocol{
             this.treeModel.setRootStudy(loadStudy);
             selectCurrentStudySavedIndex();
             view.displayModeSelect.setEnabled(true);
-            view.updateGUIForState(loadStudy.displayMode);
+            view.updateGUIForState(loadStudy.getDisplayMode());
         }
         
         //Update view

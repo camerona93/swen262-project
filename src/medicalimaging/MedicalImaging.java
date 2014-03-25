@@ -5,6 +5,9 @@
  */
 
 package medicalimaging;
+
+import medicalimaging.gui.MainFrameController;
+
 /**
  *
  * @author ericlee

@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.studyLoaders;
 
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+import medicalimaging.imageTypes.MedicalImage;
+import medicalimaging.imageTypes.PreLoadedImage;
+import medicalimaging.model.Study;
 
 /**
  *
@@ -35,7 +38,7 @@ public class ProfileStudyLoader extends ReconStudyLoader{
             MedicalImage studyImage = new PreLoadedImage(new ImageIcon(bfImage));
             loadStudy.addElement(studyImage);
         }
-        loadStudy.selectedIndex = 0;
+        loadStudy.setSelectedIndex(0);
         return loadStudy;
     }
 }

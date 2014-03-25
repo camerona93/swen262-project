@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.model;
 
 /**
  *
  * @author ericlee
  */
-abstract class DisplayModeStudyUndoableOperation implements StudyUndoableOperation{
+public abstract class DisplayModeStudyUndoableOperation implements StudyUndoableOperation{
     private Study study;
     protected final int currentMode;
     protected final int previousMode;
@@ -31,6 +31,6 @@ abstract class DisplayModeStudyUndoableOperation implements StudyUndoableOperati
         onUndo();
     }
     
-    abstract void onExecute();
-    abstract void onUndo();
+    public abstract void onExecute();
+    public abstract void onUndo();
 }

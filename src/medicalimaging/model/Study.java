@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.model;
+import medicalimaging.imageTypes.MedicalImage;
+import medicalimaging.studyLoaders.StudyLoader;
 import java.util.ArrayList;
 
 /**
@@ -18,9 +20,9 @@ public class Study extends StudyElement{
     protected String name;
     protected int displayMode;
     protected int selectedIndex;
-    protected transient StudyLoader studyLoader;
     protected transient ArrayList<StudyUndoableOperation> undoStack;
-    protected transient ArrayList<Study> reconStudies;
+    public transient StudyLoader studyLoader;
+    public transient ArrayList<Study> reconStudies;
     
     public static final int DISPLAY_MODE_1x1 = 1;
     public static final int DISPLAY_MODE_2x2 = 2;
@@ -72,6 +74,33 @@ public class Study extends StudyElement{
                 counter++;
         }
         return counter;
+    }
+    
+    public void undoTask() {
+        if(undoStack.size() > 0) {
+            StudyUndoableOperation operation = undoStack.remove(0);
+            operation.undo();
+        }
+    }
+    
+    public void addUndoTask(StudyUndoableOperation  operation) {
+        undoStack.add(operation);
+    }
+    
+    public void setSelectedIndex(int index) {
+        selectedIndex = index;
+    }
+    
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+    
+    public int getDisplayMode() {
+        return displayMode;
+    }
+    
+    public void setDisplayMode(int displayMode) {
+        this.displayMode = displayMode;
     }
     
     public String toString() {

@@ -4,9 +4,10 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.imageTypes;
 
 import javax.swing.ImageIcon;
+import medicalimaging.model.StudyElement;
 
 
 /**

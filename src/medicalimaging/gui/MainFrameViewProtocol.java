@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-package medicalimaging;
+package medicalimaging.gui;
+
+import medicalimaging.model.StudyElement;
 
 /**
  *
