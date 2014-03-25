@@ -53,7 +53,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
      * @param loadImages ArrayList<MedicalImage> to load
      */
     protected void loadImages(ArrayList<MedicalImage> loadImages) {
-        this.clearImagePanel();
+        //this.clearImagePanel();
+        imagePanel.removeAll();
         double  sqrt = Math.sqrt(loadImages.size());
         int gridSize = (int)Math.ceil(sqrt);
         this.imagePanel.setLayout(new GridLayout(gridSize, gridSize));
@@ -80,7 +81,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             this.imagePanel.add(imageLabel);
         }*/
         
-        this.imagePanel.revalidate();
+        imagePanel.revalidate();
+        imagePanel.repaint();
     }
     
     protected void setTreeModel(TreeModel model) {
