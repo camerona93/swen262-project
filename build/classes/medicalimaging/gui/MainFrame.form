@@ -158,7 +158,7 @@
         <Component class="javax.swing.JComboBox" name="displayModeSelect">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { &quot;1x1&quot;, &quot;2x2&quot;, &quot;Recon&quot;})" type="code"/>
+              <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { &quot;1x1&quot;, &quot;2x2&quot;, &quot;Recon&quot;, &quot;Window&quot;})" type="code"/>
             </Property>
           </Properties>
           <Events>

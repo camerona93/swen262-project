@@ -6,6 +6,7 @@
 
 package medicalimaging.gui;
 
+import java.awt.GridLayout;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
 import medicalimaging.studyLoaders.LocalStudyLoader;
@@ -14,12 +15,17 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.tree.TreePath;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
 import medicalimaging.model.Study;
 import medicalimaging.model.StudyElement;
 import medicalimaging.model.StudyTreeModel;
 import medicalimaging.model.StudyUndoableOperation;
+import medicalimaging.studyLoaders.IntensityStudyLoader;
 
 /**
  *
@@ -91,7 +97,6 @@ public class MainFrameController implements MainFrameViewProtocol{
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
             if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_1x1) {
                 loadImages.add(selectedImage);
-                System.out.println("DISPLAY MODE 1");
             }
             else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_2x2) {
                 int childCount = currentStudy.getImageCount();
@@ -122,6 +127,11 @@ public class MainFrameController implements MainFrameViewProtocol{
                     Study reconStudy = reconStudies.get(i);
                     loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.getSelectedIndex()));
                 }
+            }
+            
+            else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
+               Study windowStudy = currentStudy.windowStudy;
+               loadImages.add((MedicalImage) windowStudy.getElement(currentStudy.getSelectedIndex()));
             }
             
             //Update GUI
@@ -209,24 +219,34 @@ public class MainFrameController implements MainFrameViewProtocol{
     
     public void displayModeChanged(int displayMode) {
         Study currentStudy = getCurrentStudy();
-        //Update the model
-        DisplayModeStudyUndoableOperation operation = new DisplayModeStudyUndoableOperation(currentStudy, displayMode) {
-            @Override
-            public void onExecute() {
-                view.updateGUIForState(currentMode);
-                view.refreshImages();
-            }
-            @Override
-            public void onUndo() {
-                view.updateGUIForState(previousMode);
-                view.refreshImages();
-            }
-        };
-        operation.execute();
-        currentStudy.addUndoTask(operation);
+        if(displayMode == Study.DISPLAY_MODE_INTEN && currentStudy.windowStudy == null) {
+            int[] values = this.getWindowValues(0, 0);
+            if(values[0] > -1)
+                currentStudy.windowStudy = new IntensityStudyLoader(currentStudy, "Window", values[0], values[1]).execute();
+            else
+                displayMode = currentStudy.getDisplayMode();
+        }
+        
+        if(displayMode != currentStudy.getDisplayMode()) {
+            //Update the model
+            DisplayModeStudyUndoableOperation operation = new DisplayModeStudyUndoableOperation(currentStudy, displayMode) {
+                @Override
+                public void onExecute() {
+                    view.updateGUIForState(currentMode);
+                    view.refreshImages();
+                }
+                @Override
+                public void onUndo() {
+                    view.updateGUIForState(previousMode);
+                    view.refreshImages();
+                }
+            };
+            operation.execute();
+            currentStudy.addUndoTask(operation);
 
         
-        view.refreshImages();
+            view.refreshImages();
+        }
     }
     
     /**
@@ -273,6 +293,14 @@ public class MainFrameController implements MainFrameViewProtocol{
             String studyPath = selectedFile.getAbsolutePath();
             StudyLoader newLoader = new LocalStudyLoader(studyPath);
             Study loadStudy = newLoader.execute();
+            if(loadStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
+                int[] values = getWindowValues(fcReturn, fcReturn);
+                if(values[0] > -1)
+                    loadStudy.windowStudy = new IntensityStudyLoader(loadStudy, "Window", values[0], values[1]).execute();
+                else
+                    loadStudy.setDisplayMode(Study.DISPLAY_MODE_1x1);
+            }
+            
             this.treeModel.setRootStudy(loadStudy);
             selectCurrentStudySavedIndex();
             view.displayModeSelect.setEnabled(true);
@@ -318,5 +346,34 @@ public class MainFrameController implements MainFrameViewProtocol{
                 return (Study)treeModel.getParent(currentSelectedElement, (Study)treeModel.getRoot());
         }
         return (Study)treeModel.getRoot();
+    }
+    
+    private int[] getWindowValues(int defaultLow, int defaultHight) {
+        int[] values = new int[]{-1, -1};
+        JPanel panel = new JPanel(new GridLayout(0, 2));
+        JTextField lowTextField = new JTextField(Integer.toString(defaultLow), 3);
+        JTextField highTextField = new JTextField(Integer.toString(defaultHight), 3);
+        
+        panel.add(new JLabel("Low: "));
+        panel.add(lowTextField);
+        panel.add(new JLabel("High: "));
+        panel.add(highTextField);
+        
+        String message = "Please enter values for the window mode: ";
+        int result = JOptionPane.showConfirmDialog(null, panel, message, JOptionPane.OK_CANCEL_OPTION);
+        if(result != JOptionPane.CANCEL_OPTION) {
+            int low = Integer.parseInt(lowTextField.getText());
+            int high = Integer.parseInt(highTextField.getText());
+            if(low >= high) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Must be a value between 0 - 255", "", JOptionPane.ERROR_MESSAGE);
+                getWindowValues(low, high);
+            }
+            else {
+                values[0] = low;
+                values[1] = high;
+            }
+        }
+        
+        return values;
     }
 }

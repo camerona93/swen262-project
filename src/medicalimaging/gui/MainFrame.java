@@ -204,7 +204,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(undoButton);
 
-        displayModeSelect.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1x1", "2x2", "Recon"}));
+        displayModeSelect.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1x1", "2x2", "Recon", "Window"}));
         displayModeSelect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 displayModeSelectActionPerformed(evt);
@@ -268,6 +268,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             displayMode = Study.DISPLAY_MODE_2x2;
         else if(selectedItem.equals("Recon"))
             displayMode = Study.DISPLAY_MODE_RECON;
+        else if(selectedItem.equals("Window"))
+            displayMode = Study.DISPLAY_MODE_INTEN;
         delegate.displayModeChanged(displayMode);
     }//GEN-LAST:event_displayModeSelectActionPerformed
     
@@ -286,8 +288,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             displayModeSelect.setSelectedItem("1x1");
         else if(state == Study.DISPLAY_MODE_2x2)
             displayModeSelect.setSelectedItem("2x2");
-        else
+        else if(state == Study.DISPLAY_MODE_RECON)
             displayModeSelect.setSelectedItem("Recon");
+        else if(state == Study.DISPLAY_MODE_INTEN) {
+            displayModeSelect.setSelectedItem("Window");
+        }
     }
     
     protected MainFrameViewProtocol delegate;

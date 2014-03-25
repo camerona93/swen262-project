@@ -26,22 +26,26 @@ public class ImageReconUtils {
         for(int i = study.getImageCount() - 1; i >= 0; i--) {
             Image image = ((MedicalImage)study.getElement(i)).loadImage().getImage();
             
-            BufferedImage bfImage = new BufferedImage(image.getHeight(null), image.getWidth(null), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage bfImage = getBufferedImageFromImage(image);
             
-            Graphics2D bGr = bfImage.createGraphics();
-            bGr.drawImage(image, 0, 0, null);
-            bGr.dispose();
-            
-            System.out.println("X:" + reconImage.length + " Y:" + reconImage[0].length + " Z:" + reconImage[0][0].length);
             //Cycle through image pixels
             for(int h = 0; h < bfImage.getHeight()-1; h++) {
                 for(int w = 0; w < bfImage.getWidth()-1; w++) {
-                    //System.out.println("X:" + w + " Y:" + i + " z:" + h);
                     reconImage[w][i][h] = bfImage.getRGB(w, h);
                 }
             }
         }
         
         return reconImage;
+    }
+    
+    public static BufferedImage getBufferedImageFromImage(Image image) {
+        BufferedImage bfImage = new BufferedImage(image.getHeight(null), image.getWidth(null), BufferedImage.TYPE_INT_ARGB);
+            
+        Graphics2D bGr = bfImage.createGraphics();
+        bGr.drawImage(image, 0, 0, null);
+        bGr.dispose();
+        
+        return bfImage;
     }
 }

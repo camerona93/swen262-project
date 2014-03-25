@@ -23,10 +23,12 @@ public class Study extends StudyElement{
     protected transient ArrayList<StudyUndoableOperation> undoStack;
     public transient StudyLoader studyLoader;
     public transient ArrayList<Study> reconStudies;
+    public transient Study windowStudy;
     
     public static final int DISPLAY_MODE_1x1 = 1;
     public static final int DISPLAY_MODE_2x2 = 2;
     public static final int DISPLAY_MODE_RECON = 3;
+    public static final int DISPLAY_MODE_INTEN = 4;
     
     public Study(String _name) {
         name = _name;
