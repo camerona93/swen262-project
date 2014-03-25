@@ -44,13 +44,13 @@ public class IntensityStudyLoader implements StudyLoader{
             
             for(int y = 0; y < bfImage.getHeight() - 1; y++) {
                 for(int x = 0; x < bfImage.getWidth() - 1; x++) {
-                    int currentColor = bfImage.getRGB(x, y);
-                    if(currentColor > high.getRGB())
+                    Color currentColor = new Color(bfImage.getRGB(x, y), false);
+                    if(currentColor.getBlue() > high.getBlue())
                         outputImage.setRGB(x, y, Color.WHITE.getRGB());
-                    else if(currentColor < low.getRGB())
+                    else if(currentColor.getBlue() < low.getBlue())
                         outputImage.setRGB(x, y, Color.BLACK.getRGB());
                     else {
-                        int newColor = generateScaledColor(new Color(currentColor, false).getBlue());
+                        int newColor = generateScaledColor(currentColor.getBlue());
                         outputImage.setRGB(x, y, new Color(newColor, newColor, newColor).getRGB());
                     }
                 }
@@ -76,8 +76,9 @@ public class IntensityStudyLoader implements StudyLoader{
     }
     
     private int generateScaledColor(int color) {
-        double mult = color / high.getBlue();
-        return (int)mult * 255;
+        double slope = 255 / (high.getBlue() - low.getBlue());
+        int returnValue =  (int)(slope * (color - low.getBlue()));
+        return returnValue;
     }
     
 }
