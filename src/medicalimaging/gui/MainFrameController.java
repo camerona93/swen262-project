@@ -7,6 +7,7 @@
 package medicalimaging.gui;
 
 import java.awt.GridLayout;
+import java.awt.Point;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
 import medicalimaging.studyLoaders.LocalStudyLoader;
@@ -100,7 +101,6 @@ public class MainFrameController implements MainFrameViewProtocol{
             }
             else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_2x2) {
                 int childCount = currentStudy.getImageCount();
-                System.out.println(childCount);
                 if(selectedIndex > -1) {
                     if(childCount <= 4) {
                         for(int i = 0; i < childCount; i++) {
@@ -177,14 +177,11 @@ public class MainFrameController implements MainFrameViewProtocol{
      * @return 
      */
     private Object selectFirstElement(Study parent) {
-        System.out.println("Find: " + parent.toString());
         int parentStartIndex = treeModel.getRowOfElement(parent, (Study)treeModel.getRoot());
-        System.out.println(parentStartIndex);
         if(parentStartIndex >= 0) {
             for(int i = 0; i < parent.getElementCount(); i++) {
                 StudyElement currentElement = parent.getElement(i);
                 if(treeModel.isLeaf(currentElement)) {
-                    System.out.println(parentStartIndex + i + 1);
                     TreePath firstPath = view.studyTree.getPathForRow(parentStartIndex + i + 1);
                     view.studyTree.setSelectionPath(firstPath);
                     return view.studyTree.getLastSelectedPathComponent();
@@ -281,7 +278,6 @@ public class MainFrameController implements MainFrameViewProtocol{
     private void loadStudy() {
         //Save the current Study
         if(getCurrentStudy().studyLoader != null) {
-            System.out.println("Saving study");
             saveStudy();
         }
         

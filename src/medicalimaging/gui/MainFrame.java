@@ -106,7 +106,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             Component[] components = imagePanel.getComponents();
             Component hoverComponent = imagePanel.getComponentAt(e.getPoint());
             
-            System.out.println(hoverComponent);
             int hoverIndex = Arrays.asList(components).indexOf(hoverComponent);
             delegate.mouseScrollOnImage(notches, hoverIndex);
         //}

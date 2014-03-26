@@ -9,7 +9,9 @@ package medicalimaging.model;
 import medicalimaging.imageTypes.MedicalImage;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 /**
  *
@@ -47,5 +49,97 @@ public class ImageReconUtils {
         bGr.dispose();
         
         return bfImage;
+    }
+    
+    public static int[] calcCrossProduct(int[] a, int[] b) {
+        int[] returnVector = new int[3];
+        
+        returnVector[0] = (a[1] * b[2]) - (a[2] * b[1]);
+        returnVector[1] = (a[2] * b[0]) - (a[0] * b[2]);
+        returnVector[2] = (a[0] * b[1]) - (a[1] * b[0]);
+        
+        return returnVector;
+    }
+    
+    /**
+     * 
+     * @param e1 index order a, b, c, d
+     * @param e2
+     * @return 
+     */
+    public static int[] solveSystemEquations(int[] e1, int[] e2) {
+        int[] solution = new int[3];
+        
+        //Create individual value arrays from equations
+        int[] a = new int[]{e1[0], e2[0]};
+        int[] b = new int[]{e1[1], e2[1]};
+        int[] c = new int[]{e1[2], e2[2]};
+        int[] d = new int[]{e1[3], e2[3]};
+        
+        //Create matrices
+        int[][] abcMatrix = {Arrays.copyOfRange(e1, 0, 3), Arrays.copyOfRange(e2, 0, 3)};
+        int[][] xMatrix = new int[2][3];
+        int[][] yMatrix = new int[2][3];
+        int[][] zMatrix = new int[2][3];
+        
+        //Populate matrices
+        for(int i = 0; i < xMatrix.length; i++) {
+            xMatrix[i][0] = d[i];
+            xMatrix[i][1] = b[i];
+            xMatrix[i][2] = c[i];
+            
+            yMatrix[i][0] = a[i];
+            yMatrix[i][1] = d[i];
+            yMatrix[i][2] = c[i];
+            
+            zMatrix[i][0] = a[i];
+            zMatrix[i][1] = b[i];
+            zMatrix[i][2] = d[i];
+        }
+        
+        //Compute values
+        int delta = determinant(abcMatrix);
+        solution[0] = determinant(xMatrix) / delta;
+        solution[1] = determinant(yMatrix) / delta;
+        solution[2] = determinant(zMatrix) / delta; 
+        
+        return solution;
+    }
+    
+    /**
+     * @param matrix
+     * @return 
+     * SOURCE: http://professorjava.weebly.com/matrix-determinant.html
+     */
+    private static int determinant(int[][] matrix) {
+        int sum=0; 
+        int s;
+        if(matrix.length==1){ 
+            return(matrix[0][0]);
+        }
+        
+        for(int i=0;i<matrix.length;i++){ 
+            int[][]smaller= new int[matrix.length-1][matrix.length-1]; 
+            for(int a=1;a<matrix.length;a++){
+                for(int b=0;b<matrix.length;b++){
+                    if(b<i){
+                        smaller[a-1][b]=matrix[a][b];
+                    }
+                    else if(b>i){
+                        smaller[a-1][b-1]=matrix[a][b];
+                    }
+                }
+            }
+            
+            if(i%2==0){ 
+                s=1;
+            }
+            else{
+                s=-1;
+            }
+            sum+=s*matrix[0][i]*(determinant(smaller)); 
+        }
+        
+        return(sum); 
     }
 }

@@ -18,8 +18,8 @@ import medicalimaging.model.Study;
  */
 public class ProfileStudyLoader extends ReconStudyLoader{
 
-    public ProfileStudyLoader(String _studyName, int[][][] _render) {
-        super(_studyName, _render);
+    public ProfileStudyLoader(String _studyName, int[][][] render) {
+        super(_studyName, render);
     }
     
     @Override
@@ -39,6 +39,7 @@ public class ProfileStudyLoader extends ReconStudyLoader{
             loadStudy.addElement(studyImage);
         }
         loadStudy.setSelectedIndex(0);
+        loadStudy.orientation = new int[]{1, 0, 0};
         return loadStudy;
     }
 }

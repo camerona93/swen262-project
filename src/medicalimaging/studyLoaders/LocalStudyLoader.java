@@ -64,9 +64,12 @@ public class LocalStudyLoader implements StudyLoader{
         
         //Create Reconstructed Studies
         int[][][] render = ImageReconUtils.generate3D(returnStudy);
-        returnStudy.reconStudies.add(new ProfileStudyLoader("Profile", render).execute());
-        returnStudy.reconStudies.add(new FrontStudyLoader("Front", render).execute());
+        returnStudy.reconStudies.add(new ProfileStudyLoader("Profile", returnStudy.getRender()).execute());
+        returnStudy.reconStudies.add(new FrontStudyLoader("Front", returnStudy.getRender()).execute());
         returnStudy.studyLoader = this;
+        
+        returnStudy.getReferenceLineForStudy(returnStudy.reconStudies.get(0));
+        
         return returnStudy;
     }
     

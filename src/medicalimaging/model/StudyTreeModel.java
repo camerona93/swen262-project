@@ -136,7 +136,6 @@ public class StudyTreeModel implements TreeModel{
         
         for(int i = 0; i < start.getElementCount(); i++) {
             Object currentElement = start.getElement(i);
-            System.out.println(currentElement.toString());
             rowCounter++;
             if(currentElement == element)
                 return rowCounter;

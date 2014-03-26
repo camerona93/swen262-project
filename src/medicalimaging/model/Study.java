@@ -5,6 +5,7 @@
  */
 
 package medicalimaging.model;
+import java.awt.Point;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
 import java.util.ArrayList;
@@ -16,19 +17,17 @@ import java.util.ArrayList;
 public class Study extends StudyElement{
     private transient ArrayList<StudyElement> studyElements;
     private transient int indexOfFirstStudy;
+    private transient int[][][] render;
     
     protected String name;
     protected int displayMode;
     protected int selectedIndex;
     protected transient ArrayList<StudyUndoableOperation> undoStack;
+    
+    public int[] orientation;
     public transient StudyLoader studyLoader;
     public transient ArrayList<Study> reconStudies;
     public transient Study windowStudy;
-    
-    public static final int DISPLAY_MODE_1x1 = 1;
-    public static final int DISPLAY_MODE_2x2 = 2;
-    public static final int DISPLAY_MODE_RECON = 3;
-    public static final int DISPLAY_MODE_INTEN = 4;
     
     public Study(String _name) {
         name = _name;
@@ -36,8 +35,9 @@ public class Study extends StudyElement{
         undoStack = new ArrayList<StudyUndoableOperation>();
         reconStudies = new ArrayList<Study>();
         displayMode = 1;
-        selectedIndex = -1;
+        selectedIndex = 0;
         indexOfFirstStudy = 0;
+        orientation = new int[]{0, 1, 0};
     }
     
     public int getElementCount() {
@@ -85,6 +85,27 @@ public class Study extends StudyElement{
         }
     }
     
+    public Point[] getReferenceLineForStudy(Study study) {
+        Point[] line = new Point[2];
+        
+        int[] referenceEq = new int[]{orientation[0], orientation[1], orientation[2], selectedIndex};
+        int[] studyEq = new int[]{study.orientation[0], study.orientation[1], study.orientation[2], study.getSelectedIndex()};
+        
+        int[] vector = ImageReconUtils.calcCrossProduct(studyEq, referenceEq); 
+        int[] startPoint = ImageReconUtils.solveSystemEquations(studyEq, referenceEq);
+        
+        System.out.println("Vector");
+        for(int i = 0; i < vector.length; i++) {
+            System.out.println(vector[i]);
+        }
+        
+        System.out.println("Start Point:");
+        for(int i = 0; i < startPoint.length; i++) {
+            System.out.println(startPoint[i]);
+        }
+        return line;
+    }
+    
     public void addUndoTask(StudyUndoableOperation  operation) {
         undoStack.add(operation);
     }
@@ -105,7 +126,23 @@ public class Study extends StudyElement{
         this.displayMode = displayMode;
     }
     
+    public int[][][] getRender() {
+        if(render == null) {
+            render = ImageReconUtils.generate3D(this);
+        }
+        return render;
+    }
+    
     public String toString() {
         return this.name;
     }
+    
+    public static final int DISPLAY_MODE_1x1 = 1;
+    public static final int DISPLAY_MODE_2x2 = 2;
+    public static final int DISPLAY_MODE_RECON = 3;
+    public static final int DISPLAY_MODE_INTEN = 4;
+    
+    public static final int ORIENTATION_XY = 1;
+    public static final int ORIENTATION_XZ = 2;
+    public static final int ORIENTATION_YZ = 3;
 }
