@@ -96,7 +96,7 @@ public class MedicalImageView extends JPanel{
                     
                     //Draw Image's lines
                     if(position < referenceLines.size()) {
-                        ArrayList<ReferenceLine> lines = referenceLines.get(x);
+                        ArrayList<ReferenceLine> lines = referenceLines.get(position);
                         for(int i = 0; i < lines.size(); i++) {
                             ReferenceLine line = lines.get(i);
                             Point[] points = line.getScaledStartEnd(imageWidth, imageHeight);
