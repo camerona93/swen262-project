@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.tree.TreePath;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
+import medicalimaging.model.ReferenceLine;
 import medicalimaging.model.Study;
 import medicalimaging.model.StudyElement;
 import medicalimaging.model.StudyTreeModel;
@@ -79,6 +80,7 @@ public class MainFrameController implements MainFrameViewProtocol{
     @Override
     public void selectedImageChanged(StudyElement selectedElement) {
         Study currentStudy = getCurrentStudy();
+        
         if(selectedElement instanceof Study) {
             this.selectFirstElement(currentStudy);
         }
@@ -96,6 +98,8 @@ public class MainFrameController implements MainFrameViewProtocol{
             
             //Create list of images to display
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
+            ArrayList<ArrayList<ReferenceLine>> lines = new ArrayList<ArrayList<ReferenceLine>>();
+            
             if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_1x1) {
                 loadImages.add(selectedImage);
             }
@@ -123,6 +127,9 @@ public class MainFrameController implements MainFrameViewProtocol{
                 ArrayList<Study> reconStudies = currentStudy.reconStudies;
                 loadImages.add(selectedImage);
                 
+                lines.add(new ArrayList<ReferenceLine>());
+                lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(0)));
+                
                 for(int i = 0; i < reconStudies.size(); i++) {
                     Study reconStudy = reconStudies.get(i);
                     loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.getSelectedIndex()));
@@ -136,7 +143,7 @@ public class MainFrameController implements MainFrameViewProtocol{
             
             //Update GUI
             view.updateGUIForState(currentStudy.getDisplayMode());
-            view.loadImages(loadImages);
+            view.imagePanel.loadImages(loadImages, lines);
         }
     }
     

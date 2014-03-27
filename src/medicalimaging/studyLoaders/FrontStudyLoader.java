@@ -37,6 +37,7 @@ public class FrontStudyLoader extends ReconStudyLoader{
         }
         loadStudy.setSelectedIndex(0);
         loadStudy.orientation = new int[]{0, 0, 1};
+        loadStudy.setRender(render);
         return loadStudy;
     }
     

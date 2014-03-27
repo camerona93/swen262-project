@@ -6,17 +6,12 @@
 
 package medicalimaging.gui;
 
-import medicalimaging.imageTypes.MedicalImage;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -50,32 +45,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         imagePanel.add(placeHolder);
     }
     
-    /**
-     * Load images into the JPanel
-     * @param loadImages ArrayList<MedicalImage> to load
-     */
-    protected void loadImages(ArrayList<MedicalImage> loadImages) {
-        //this.clearImagePanel();
-        imagePanel.removeAll();
-        double  sqrt = Math.sqrt(loadImages.size());
-        int gridSize = (int)Math.ceil(sqrt);
-        this.imagePanel.setLayout(new GridLayout(gridSize, gridSize));
-        
-        
-        for(MedicalImage loadImage : loadImages) {
-            int imageWidth = this.imagePanel.getWidth() / gridSize;//gridDivider;
-            int imageHeight = this.imagePanel.getHeight() / gridSize;//gridDivider;
-            ImageIcon tempIcon = loadImage.loadImage();
-            Image image = tempIcon.getImage();
-            Image scaledImage = image.getScaledInstance(imageWidth, imageHeight, 0);
-            Icon imageIcon = new ImageIcon(scaledImage);
-            JLabel imageLabel = new JLabel(imageIcon);
-            this.imagePanel.add(imageLabel);
-        }
-        imagePanel.revalidate();
-        imagePanel.repaint();
-    }
-    
     protected void setTreeModel(TreeModel model) {
         studyTree.setModel(model);
     }
@@ -101,14 +70,9 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         int panelX = imagePanel.getX();
         int panelY = imagePanel.getY();
         
-        //if((mouseX > panelX && mouseX < panelX + imagePanel.getWidth()) && (mouseY > panelY && mouseY < imagePanel.getHeight())) {
-            int notches = e.getWheelRotation();
-            Component[] components = imagePanel.getComponents();
-            Component hoverComponent = imagePanel.getComponentAt(e.getPoint());
-            
-            int hoverIndex = Arrays.asList(components).indexOf(hoverComponent);
-            delegate.mouseScrollOnImage(notches, hoverIndex);
-        //}
+        int hoverIndex = imagePanel.getGridIndexOfImageAt(mouseX, mouseY);
+        int notches = e.getWheelRotation();
+        delegate.mouseScrollOnImage(notches, hoverIndex);
     }
     
     /**
@@ -122,7 +86,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
 
         studyTreePanel = new javax.swing.JScrollPane();
         studyTree = new javax.swing.JTree();
-        imagePanel = new javax.swing.JPanel();
         toolbar = new javax.swing.JToolBar();
         openButton = new javax.swing.JButton();
         copyButton = new javax.swing.JButton();
@@ -130,21 +93,11 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         nextButton = new javax.swing.JButton();
         undoButton = new javax.swing.JButton();
         displayModeSelect = new javax.swing.JComboBox();
+        imagePanel = new medicalimaging.gui.MedicalImageView();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         studyTreePanel.setViewportView(studyTree);
-
-        javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
-        imagePanel.setLayout(imagePanelLayout);
-        imagePanelLayout.setHorizontalGroup(
-            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 643, Short.MAX_VALUE)
-        );
-        imagePanelLayout.setVerticalGroup(
-            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         toolbar.setRollover(true);
 
@@ -211,6 +164,17 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         });
         toolbar.add(displayModeSelect);
 
+        javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
+        imagePanel.setLayout(imagePanelLayout);
+        imagePanelLayout.setHorizontalGroup(
+            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 649, Short.MAX_VALUE)
+        );
+        imagePanelLayout.setVerticalGroup(
+            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -220,7 +184,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(studyTreePanel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -298,7 +262,7 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyButton;
     protected javax.swing.JComboBox displayModeSelect;
-    private javax.swing.JPanel imagePanel;
+    protected medicalimaging.gui.MedicalImageView imagePanel;
     private javax.swing.JButton nextButton;
     private javax.swing.JButton openButton;
     private javax.swing.JButton previousButton;

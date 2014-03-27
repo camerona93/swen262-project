@@ -68,8 +68,6 @@ public class LocalStudyLoader implements StudyLoader{
         returnStudy.reconStudies.add(new FrontStudyLoader("Front", returnStudy.getRender()).execute());
         returnStudy.studyLoader = this;
         
-        returnStudy.getReferenceLineForStudy(returnStudy.reconStudies.get(0));
-        
         return returnStudy;
     }
     

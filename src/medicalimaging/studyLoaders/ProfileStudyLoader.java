@@ -40,6 +40,7 @@ public class ProfileStudyLoader extends ReconStudyLoader{
         }
         loadStudy.setSelectedIndex(0);
         loadStudy.orientation = new int[]{1, 0, 0};
+        loadStudy.setRender(render);
         return loadStudy;
     }
 }

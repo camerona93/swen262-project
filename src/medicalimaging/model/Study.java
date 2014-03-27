@@ -85,25 +85,56 @@ public class Study extends StudyElement{
         }
     }
     
-    public Point[] getReferenceLineForStudy(Study study) {
+    public ReferenceLine getReferenceLineForStudy(Study study) {
         Point[] line = new Point[2];
         
         int[] referenceEq = new int[]{orientation[0], orientation[1], orientation[2], selectedIndex};
         int[] studyEq = new int[]{study.orientation[0], study.orientation[1], study.orientation[2], study.getSelectedIndex()};
         
-        int[] vector = ImageReconUtils.calcCrossProduct(studyEq, referenceEq); 
-        int[] startPoint = ImageReconUtils.solveSystemEquations(studyEq, referenceEq);
+        int[] vector = ImageReconUtils.calcCrossProduct(studyEq, referenceEq);
         
-        System.out.println("Vector");
-        for(int i = 0; i < vector.length; i++) {
-            System.out.println(vector[i]);
+        int width = 0;
+        int height = 0;
+        
+        
+        //X
+        if(vector[0] == 1) {
+            line[0] = new Point(study.selectedIndex, 0);
+            line[1] = new Point(study.selectedIndex, render[0].length);
+            width = render.length;
+            height = render[0].length;
         }
         
-        System.out.println("Start Point:");
-        for(int i = 0; i < startPoint.length; i++) {
-            System.out.println(startPoint[i]);
+        //Y
+        else if(vector[1] == 1) {
+           line[0] = new Point(0, study.selectedIndex);
+           line[1] = new Point(render.length, study.selectedIndex);
+           width = render.length;
+           height = render[0].length;
         }
-        return line;
+        
+        //Z
+        else if(vector[2] == 1) {
+            if(orientation[0] == 0) {
+                line[0] = new Point(study.selectedIndex, 0);
+                line[1] = new Point(study.selectedIndex, render[0][0].length);
+                height = render[0][0].length;
+                width = render.length;
+            }
+            else if(orientation[1] == 0) {
+                line[0] = new Point(0, study.selectedIndex);
+                line[1] = new Point(render[0][0].length, study.selectedIndex);
+                width = render[0][0].length;
+                height = render[0].length;
+            }
+        }
+        
+        else {
+            line[0] = new Point(0, 0);
+            line[1] = new Point(0, 0);
+        }
+        
+        return new ReferenceLine(line, width, height);
     }
     
     public void addUndoTask(StudyUndoableOperation  operation) {
@@ -131,6 +162,10 @@ public class Study extends StudyElement{
             render = ImageReconUtils.generate3D(this);
         }
         return render;
+    }
+    
+    public void setRender(int[][][] render) {
+        this.render = render;
     }
     
     public String toString() {
