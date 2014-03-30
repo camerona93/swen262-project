@@ -98,34 +98,56 @@ public class Study extends StudyElement{
         
         
         //X
-        if(vector[0] == 1) {
-            line[0] = new Point(study.selectedIndex, 0);
-            line[1] = new Point(study.selectedIndex, render[0].length);
-            width = render.length;
-            height = render[0].length;
+        if(Math.abs(vector[0]) == 1) {
+            if(study.orientation[2] == 1) {
+                width = render.length;
+                height = render[0][0].length;
+                line[0] = new Point(0, study.selectedIndex);
+                line[1] = new Point(render[0][0].length, study.selectedIndex);
+            }
+            else {
+                width = render.length;
+                height = render[0].length;
+                line[0] = new Point(0, height - study.selectedIndex);
+                line[1] = new Point(render[0][0].length, height - study.selectedIndex);
+            }
         }
         
         //Y
-        else if(vector[1] == 1) {
-           line[0] = new Point(0, study.selectedIndex);
-           line[1] = new Point(render.length, study.selectedIndex);
-           width = render.length;
-           height = render[0].length;
+        else if(Math.abs(vector[1]) == 1) {
+           if(study.orientation[2] == 1) {
+               line[0] = new Point(study.selectedIndex, 0);
+               line[1] = new Point(study.selectedIndex, render[0][0].length);
+               width = render.length;
+               height = render[0][0].length;
+           }
+           else if(study.orientation[0] == 1){
+                width = render.length;
+                height = render[0][0].length;
+                line[0] = new Point(height - study.selectedIndex, 0);
+                line[1] = new Point(height - study.selectedIndex, render.length);
+           }
+           else {
+               line[0] = new Point(study.selectedIndex, 0);
+               line[1] = new Point(study.selectedIndex, render.length);
+               width = render.length;
+               height = render[0].length;
+           }
         }
         
         //Z
-        else if(vector[2] == 1) {
+        else if(Math.abs(vector[2]) == 1) {
             if(orientation[0] == 0) {
-                line[0] = new Point(study.selectedIndex, 0);
-                line[1] = new Point(study.selectedIndex, render[0][0].length);
                 height = render[0][0].length;
                 width = render.length;
+                line[0] = new Point(study.selectedIndex, 0);
+                line[1] = new Point(study.selectedIndex, render[0][0].length);
             }
             else if(orientation[1] == 0) {
-                line[0] = new Point(0, study.selectedIndex);
-                line[1] = new Point(render[0][0].length, study.selectedIndex);
                 width = render[0][0].length;
                 height = render[0].length;
+                line[0] = new Point(0, height - study.selectedIndex);
+                line[1] = new Point(render[0][0].length, height - study.selectedIndex);
             }
         }
         
