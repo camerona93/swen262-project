@@ -144,17 +144,6 @@ public class MainFrameController implements MainFrameViewProtocol{
                     }
                     lines.add(currentLines);
                 }
-                //lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy));
-                /*lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(0)));
-                lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(1)));
-                
-                lines.add(new ArrayList<ReferenceLine>());
-                lines.get(1).add(currentStudy.reconStudies.get(0).getReferenceLineForStudy(currentStudy));
-                lines.get(1).add(currentStudy.reconStudies.get(0).getReferenceLineForStudy(currentStudy.reconStudies.get(1)));
-                
-                lines.add(new ArrayList<ReferenceLine>());
-                lines.get(2).add(currentStudy.reconStudies.get(1).getReferenceLineForStudy(currentStudy));
-                lines.get(2).add(currentStudy.reconStudies.get(1).getReferenceLineForStudy(currentStudy.reconStudies.get(0)));*/
                 
                 loadImages.add(selectedImage);
                 for(int i = 0; i < reconStudies.size(); i++) {

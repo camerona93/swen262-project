@@ -42,25 +42,6 @@ public class MedicalImageView extends JPanel{
     }
     
     protected void loadImages(ArrayList<MedicalImage> loadImages, ArrayList<ArrayList<ReferenceLine>> lines) {
-        //this.clearImagePanel();
-        /*this.removeAll();
-        double  sqrt = Math.sqrt(loadImages.size());
-        gridSize = (int)Math.ceil(sqrt);
-        this.setLayout(new GridLayout(gridSize, gridSize));
-        
-        
-        for(MedicalImage loadImage : loadImages) {
-            int imageWidth = this.getWidth() / gridSize;
-            int imageHeight = this.getHeight() / gridSize;
-            ImageIcon tempIcon = loadImage.loadImage();
-            Image image = tempIcon.getImage();
-            Image scaledImage = image.getScaledInstance(imageWidth, imageHeight, 0);
-            Icon imageIcon = new ImageIcon(scaledImage);
-            JLabel imageLabel = new JLabel(imageIcon);
-            this.add(imageLabel);
-        }
-        this.revalidate();
-        this.repaint();*/
         
         double  sqrt = Math.sqrt(loadImages.size());
         gridSize = (int)Math.ceil(sqrt);
@@ -94,13 +75,18 @@ public class MedicalImageView extends JPanel{
                     int yPos = y * imageHeight;
                     g2.drawImage(images.get(position), xPos, yPos, imageWidth, imageHeight, null);
                     
+                    //Draw images reference boxes
+                    g2.setColor(getColorForImageIndex(position));
+                    int boxHeight = (int)(imageHeight * .05);
+                    g2.fillRect(xPos, yPos, boxHeight, boxHeight);
+                    
                     //Draw Image's lines
                     if(position < referenceLines.size()) {
                         ArrayList<ReferenceLine> lines = referenceLines.get(position);
                         for(int i = 0; i < lines.size(); i++) {
                             ReferenceLine line = lines.get(i);
                             Point[] points = line.getScaledStartEnd(imageWidth, imageHeight);
-                            g2.setColor(Color.GREEN);
+                            g2.setColor(getColorForImageIndex(i));
                             g2.drawLine(xPos + points[0].x, yPos + points[0].y, xPos + points[1].x, yPos + points[1].y);
                         }
                     }
@@ -121,5 +107,21 @@ public class MedicalImageView extends JPanel{
             }
         }
         return -1;
+    }
+    
+    private Color getColorForImageIndex(int index) {
+        int colorCode = index % 5;
+        switch(colorCode) {
+            case 1:
+                return Color.BLUE;
+            case 2:
+                return Color.RED;
+            case 3:
+                return Color.CYAN;
+            case 4:
+                return Color.MAGENTA;
+            default:
+                return Color.GREEN;
+        }
     }
 }
