@@ -125,10 +125,27 @@ public class MainFrameController implements MainFrameViewProtocol{
             }
             else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
                 ArrayList<Study> reconStudies = currentStudy.reconStudies;
-                loadImages.add(selectedImage);
                 
-                lines.add(new ArrayList<ReferenceLine>());
-                lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(0)));
+                for(int i = 0; i <= currentStudy.reconStudies.size(); i++) {
+                    ArrayList<ReferenceLine> currentLines = new ArrayList<ReferenceLine>();
+                    if(i > 0) {
+                        Study reconStudy = currentStudy.reconStudies.get(i - 1);
+                        currentLines.add(reconStudy.getReferenceLineForStudy(currentStudy));
+                        for(int k = 0; k < currentStudy.reconStudies.size(); k++) {
+                            Study currentRecon = currentStudy.reconStudies.get(k);
+                            currentLines.add(reconStudy.getReferenceLineForStudy(currentRecon));
+                        }
+                    }
+                    else {
+                        currentLines.add(currentStudy.getReferenceLineForStudy(currentStudy));
+                        for(int k = 0; k < currentStudy.reconStudies.size(); k++) {
+                            currentLines.add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(k)));
+                        }
+                    }
+                    lines.add(currentLines);
+                }
+                //lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy));
+                /*lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(0)));
                 lines.get(0).add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(1)));
                 
                 lines.add(new ArrayList<ReferenceLine>());
@@ -137,8 +154,9 @@ public class MainFrameController implements MainFrameViewProtocol{
                 
                 lines.add(new ArrayList<ReferenceLine>());
                 lines.get(2).add(currentStudy.reconStudies.get(1).getReferenceLineForStudy(currentStudy));
-                lines.get(2).add(currentStudy.reconStudies.get(1).getReferenceLineForStudy(currentStudy.reconStudies.get(0)));
+                lines.get(2).add(currentStudy.reconStudies.get(1).getReferenceLineForStudy(currentStudy.reconStudies.get(0)));*/
                 
+                loadImages.add(selectedImage);
                 for(int i = 0; i < reconStudies.size(); i++) {
                     Study reconStudy = reconStudies.get(i);
                     loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.getSelectedIndex()));
