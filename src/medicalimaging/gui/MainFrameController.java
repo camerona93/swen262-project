@@ -12,6 +12,7 @@ import medicalimaging.studyLoaders.StudyLoader;
 import medicalimaging.studyLoaders.LocalStudyLoader;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -32,7 +33,7 @@ import medicalimaging.studyLoaders.IntensityStudyLoader;
  *
  * @author ericlee
  */
-public class MainFrameController implements MainFrameViewProtocol{
+public class MainFrameController implements MainFrameViewProtocol, MedicalImageViewProtocol{
     private StudyTreeModel treeModel;
     private JFileChooser fileChooser = new JFileChooser();
     private ArrayList<StudyUndoableOperation> operationStack = new ArrayList<StudyUndoableOperation>();
@@ -54,6 +55,7 @@ public class MainFrameController implements MainFrameViewProtocol{
                     saveStudy();
             }
         });
+        view.imagePanel.addSelectionListener(this);
     }
 
     @Override
@@ -267,6 +269,11 @@ public class MainFrameController implements MainFrameViewProtocol{
         
             view.refreshImages();
         }
+    }
+    
+     @Override
+    public void rectSelected(int image, Rectangle2D rect) {
+        //TODO: Implement what happens on selection.
     }
     
     /**

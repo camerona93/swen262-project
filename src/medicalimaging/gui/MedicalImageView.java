@@ -31,6 +31,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
      */
     
     private ArrayList<ArrayList<ReferenceLine>> referenceLines;
+    private ArrayList<MedicalImageViewProtocol> selectionListeners;
     private ArrayList<Image> images;
     private int gridSize;
     
@@ -44,6 +45,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     public MedicalImageView() {
         referenceLines = new ArrayList<ArrayList<ReferenceLine>>();
         images = new ArrayList<Image>();
+        selectionListeners = new ArrayList<MedicalImageViewProtocol>();
         gridSize = 1;
         dragging = false;
         dragRectList = new ArrayList<Rectangle2D>();
@@ -181,6 +183,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     public void mouseReleased(MouseEvent e) {
         dragRectList.add(dragRect);
         dragging = false;
+        this.notifySelectionListeners(this.getGridIndexOfImageAt(e.getX(), e.getY()), dragRect);
     }
 
     @Override
@@ -207,6 +210,20 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         dragRectList.clear();
         repaint();
     }
+    
+    public void addSelectionListener(MedicalImageViewProtocol observer) {
+        selectionListeners.add(observer);
+    }
+    
+    public void removeSelectionListener(MedicalImageViewProtocol observer) {
+        selectionListeners.remove(observer);
+    }
+    
+    private void notifySelectionListeners(int imageIndex, Rectangle2D rect) {
+        for(int i = 0; i < selectionListeners.size(); i++) {
+            selectionListeners.get(i).rectSelected(imageIndex, rect);
+        }
+    } 
     
     private Color getColorForImageIndex(int index) {
         int colorCode = index % 5;
