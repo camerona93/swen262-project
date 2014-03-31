@@ -242,20 +242,6 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         return this.getHeight() / gridSize;
     }
     
-    private Color shadeColor(Color color) {
-        int red = color.getRed();
-        int green = color.getGreen();
-        int blue = color.getBlue();
-        
-        int colorIncrement = 10;
-        
-        red = checkColorBounds(red + colorIncrement);
-        green = checkColorBounds(green + colorIncrement);
-        blue = checkColorBounds(blue + colorIncrement);
-        
-        return new Color(red, green, blue);
-    }
-    
     private int checkColorBounds(int colorVal) {
         if(colorVal > 255)
             return 255;
