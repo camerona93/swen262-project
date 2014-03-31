@@ -7,7 +7,6 @@
 package medicalimaging.gui;
 
 import java.awt.GridLayout;
-import java.awt.Point;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
 import medicalimaging.studyLoaders.LocalStudyLoader;
@@ -238,6 +237,7 @@ public class MainFrameController implements MainFrameViewProtocol{
     }
     
     public void displayModeChanged(int displayMode) {
+        view.imagePanel.clearImageSelection();
         Study currentStudy = getCurrentStudy();
         if(displayMode == Study.DISPLAY_MODE_INTEN && currentStudy.windowStudy == null) {
             int[] values = this.getWindowValues(0, 0);

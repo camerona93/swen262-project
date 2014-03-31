@@ -17,7 +17,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import medicalimaging.imageTypes.MedicalImage;
+import medicalimaging.imageTypes.MedicalImage; 
 import medicalimaging.model.ReferenceLine;
 
 /**
@@ -37,6 +37,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     private boolean dragging;
     private Point dragStickPoint;
     private Rectangle2D dragRect;
+    private ArrayList<Rectangle2D> dragRectList;
     private final Color DRAGGING_BORDER_COLOR = new Color(105, 152, 255);
     private final Color DRAGGING_FILL_COLOR = new Color(105, 152, 255, 150);
     
@@ -45,6 +46,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         images = new ArrayList<Image>();
         gridSize = 1;
         dragging = false;
+        dragRectList = new ArrayList<Rectangle2D>();
         
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -103,14 +105,11 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         
         //Draw Dragging rectangle
         if(dragging) {
-            g2.setColor(DRAGGING_BORDER_COLOR);
-            g2.draw(dragRect);
-            int rectX = (int)dragRect.getX();
-            int rectY = (int)dragRect.getY();
-            
-            Rectangle2D fillRect = new Rectangle2D.Float(rectX + 1, rectY + 1, (int)dragRect.getWidth() - 1, (int)dragRect.getHeight() - 1);
-            g2.setColor(DRAGGING_FILL_COLOR);
-            g2.fill(fillRect);
+            drawDragRect(dragRect, g2);
+        }
+        //Draw Previous drag rects
+        for(int i = 0; i < dragRectList.size(); i++) {
+            drawDragRect(dragRectList.get(i), g2);
         }
     }
     
@@ -180,6 +179,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        dragRectList.add(dragRect);
         dragging = false;
     }
 
@@ -201,6 +201,11 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     @Override
     public void mouseExited(MouseEvent e) {
         
+    }
+    
+    public void clearImageSelection() {
+        dragRectList.clear();
+        repaint();
     }
     
     private Color getColorForImageIndex(int index) {
@@ -257,5 +262,16 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         else if(colorVal < 0)
             return 0;
         return colorVal;
+    }
+    
+    private void drawDragRect(Rectangle2D rect, Graphics2D g2) {
+        g2.setColor(DRAGGING_BORDER_COLOR);
+            g2.draw(rect);
+            int rectX = (int)rect.getX();
+            int rectY = (int)rect.getY();
+            
+            Rectangle2D fillRect = new Rectangle2D.Float(rectX + 1, rectY + 1, (int)rect.getWidth() - 1, (int)rect.getHeight() - 1);
+            g2.setColor(DRAGGING_FILL_COLOR);
+            g2.fill(fillRect);
     }
 }
