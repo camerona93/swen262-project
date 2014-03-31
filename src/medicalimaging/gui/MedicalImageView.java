@@ -38,6 +38,7 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     private Point dragStickPoint;
     private Rectangle2D dragRect;
     private final Color DRAGGING_BORDER_COLOR = new Color(105, 152, 255);
+    private final Color DRAGGING_FILL_COLOR = new Color(105, 152, 255, 150);
     
     public MedicalImageView() {
         referenceLines = new ArrayList<ArrayList<ReferenceLine>>();
@@ -104,6 +105,12 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         if(dragging) {
             g2.setColor(DRAGGING_BORDER_COLOR);
             g2.draw(dragRect);
+            int rectX = (int)dragRect.getX();
+            int rectY = (int)dragRect.getY();
+            
+            Rectangle2D fillRect = new Rectangle2D.Float(rectX + 1, rectY + 1, (int)dragRect.getWidth() - 1, (int)dragRect.getHeight() - 1);
+            g2.setColor(DRAGGING_FILL_COLOR);
+            g2.fill(fillRect);
         }
     }
     
@@ -120,22 +127,6 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         }
         return -1;
     }
-    
-    private Color getColorForImageIndex(int index) {
-        int colorCode = index % 5;
-        switch(colorCode) {
-            case 1:
-                return Color.BLUE;
-            case 2:
-                return Color.RED;
-            case 3:
-                return Color.CYAN;
-            case 4:
-                return Color.MAGENTA;
-            default:
-                return Color.GREEN;
-        }
-    }
         
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -143,6 +134,19 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         int mouseY = e.getY();
         int rectX = dragStickPoint.x;
         int rectY = dragStickPoint.y;
+        int imageIndex = getGridIndexOfImageAt(dragStickPoint.x, dragStickPoint.y);
+        
+        //Check bounds of image
+        Point imagePoint = getLocationOfImageIndex(imageIndex);
+        if(mouseX < imagePoint.x)
+            mouseX = imagePoint.x;
+        else if(mouseX > imagePoint.x + getImageWidth())
+            mouseX = imagePoint.x + getImageWidth();
+        
+        if(mouseY < imagePoint.y)
+            mouseY = imagePoint.y;
+        else if(mouseY > imagePoint.y + getImageHeight())
+            mouseY = imagePoint.y + getImageHeight();
         
         int width = mouseX - rectX;
         int height = mouseY - rectY;
@@ -197,5 +201,61 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     @Override
     public void mouseExited(MouseEvent e) {
         
+    }
+    
+    private Color getColorForImageIndex(int index) {
+        int colorCode = index % 5;
+        switch(colorCode) {
+            case 1:
+                return Color.BLUE;
+            case 2:
+                return Color.RED;
+            case 3:
+                return Color.CYAN;
+            case 4:
+                return Color.MAGENTA;
+            default:
+                return Color.GREEN;
+        }
+    }
+    
+    private Point getLocationOfImageIndex(int index) {
+        int imageWidth = getImageWidth();
+        int imageHeight = getImageHeight();
+        
+        int yPos = index / gridSize;
+        int xPos = index % gridSize;
+        
+        return new Point(xPos * imageWidth, yPos * imageHeight);
+    }
+    
+    private int getImageWidth() {
+        return this.getWidth() / gridSize;
+    }
+    
+    private int getImageHeight() {
+        return this.getHeight() / gridSize;
+    }
+    
+    private Color shadeColor(Color color) {
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        
+        int colorIncrement = 10;
+        
+        red = checkColorBounds(red + colorIncrement);
+        green = checkColorBounds(green + colorIncrement);
+        blue = checkColorBounds(blue + colorIncrement);
+        
+        return new Color(red, green, blue);
+    }
+    
+    private int checkColorBounds(int colorVal) {
+        if(colorVal > 255)
+            return 255;
+        else if(colorVal < 0)
+            return 0;
+        return colorVal;
     }
 }
