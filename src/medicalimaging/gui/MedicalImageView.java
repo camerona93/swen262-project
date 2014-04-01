@@ -74,37 +74,13 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        
-        int imageWidth = this.getWidth() / gridSize;
-        int imageHeight = this.getHeight() / gridSize;
+        //Draw images
         for(int y = 0; y < gridSize; y++) {
             for(int x = 0; x < gridSize; x++) {
                 int position = (y * gridSize) + x;
-                //Draw image.
-                if(position < images.size()) {
-                    int xPos = x * imageWidth;
-                    int yPos = y * imageHeight;
-                    g2.drawImage(images.get(position), xPos, yPos, imageWidth, imageHeight, null);
-                    
-                    //Draw images reference boxes
-                    g2.setColor(getColorForImageIndex(position));
-                    int boxHeight = (int)(imageHeight * .05);
-                    g2.fillRect(xPos, yPos, boxHeight, boxHeight);
-                    
-                    //Draw Image's lines
-                    if(position < referenceLines.size()) {
-                        ArrayList<ReferenceLine> lines = referenceLines.get(position);
-                        for(int i = 0; i < lines.size(); i++) {
-                            ReferenceLine line = lines.get(i);
-                            Point[] points = line.getScaledStartEnd(imageWidth, imageHeight);
-                            g2.setColor(getColorForImageIndex(i));
-                            g2.drawLine(xPos + points[0].x, yPos + points[0].y, xPos + points[1].x, yPos + points[1].y);
-                        }
-                    }
-                }
+                this.drawImage(position, x, y, g2);
             }
         }
-        
         //Draw Dragging rectangle
         if(dragging) {
             drawDragRect(dragRect, g2);
@@ -276,5 +252,31 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
             Rectangle2D fillRect = new Rectangle2D.Float(rectX + 1, rectY + 1, (int)rect.getWidth() - 1, (int)rect.getHeight() - 1);
             g2.setColor(DRAGGING_FILL_COLOR);
             g2.fill(fillRect);
+    }
+    
+    private void drawImage(int imageIndex, int gridX, int gridY, Graphics2D g2) {
+        int imageWidth = this.getWidth() / gridSize;
+        int imageHeight = this.getHeight() / gridSize;
+        if(imageIndex < images.size()) {
+            int xPos = gridX * imageWidth;
+            int yPos = gridY * imageHeight;
+            g2.drawImage(images.get(imageIndex), xPos, yPos, imageWidth, imageHeight, null);
+
+            //Draw images reference boxes
+            g2.setColor(getColorForImageIndex(imageIndex));
+            int boxHeight = (int)(imageHeight * .05);
+            g2.fillRect(xPos, yPos, boxHeight, boxHeight);
+
+            //Draw Image's lines
+            if(imageIndex < referenceLines.size()) {
+                ArrayList<ReferenceLine> lines = referenceLines.get(imageIndex);
+                for(int i = 0; i < lines.size(); i++) {
+                    ReferenceLine line = lines.get(i);
+                    Point[] points = line.getScaledStartEnd(imageWidth, imageHeight);
+                    g2.setColor(getColorForImageIndex(i));
+                    g2.drawLine(xPos + points[0].x, yPos + points[0].y, xPos + points[1].x, yPos + points[1].y);
+                }
+            }
+        }
     }
 }
