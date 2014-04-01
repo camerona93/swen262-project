@@ -6,6 +6,7 @@
 
 package medicalimaging.model;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class Study extends StudyElement{
     public int[] orientation;
     public transient StudyLoader studyLoader;
     public transient ArrayList<Study> reconStudies;
+    public transient ArrayList<Rectangle2D> selectionRects;
     public transient Study windowStudy;
     
     public Study(String _name) {
@@ -34,6 +36,7 @@ public class Study extends StudyElement{
         studyElements = new ArrayList<StudyElement>();
         undoStack = new ArrayList<StudyUndoableOperation>();
         reconStudies = new ArrayList<Study>();
+        selectionRects = new ArrayList<Rectangle2D>();
         displayMode = 1;
         selectedIndex = 0;
         indexOfFirstStudy = 0;

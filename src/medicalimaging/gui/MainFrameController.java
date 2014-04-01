@@ -98,27 +98,16 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             currentStudy.setSelectedIndex(selectedIndex);
             
             //Create list of images and reference lines to display
-            ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
             ArrayList<ArrayList<ReferenceLine>> lines = new ArrayList<ArrayList<ReferenceLine>>();
-            
-            if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_1x1) {
-                loadImages.add(selectedImage);
-            }
-            else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_2x2) {
-                loadImages = getImagesFor2x2DisplayMode(currentStudy);
-            }
-            else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
+            if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON)
                 lines = getReferenceLinesForStudy(currentStudy);
-                loadImages = getImagesForReconDisplayMode(currentStudy);
-            }
-            else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
-               Study windowStudy = currentStudy.windowStudy;
-               loadImages.add((MedicalImage) windowStudy.getElement(currentStudy.getSelectedIndex()));
-            }
+            
+            //Update selection rects
+            view.imagePanel.setSelectionRects(getSelectionsRectsForStudy(currentStudy));
             
             //Update GUI
             view.updateGUIForState(currentStudy.getDisplayMode());
-            view.imagePanel.loadImages(loadImages, lines);
+            view.imagePanel.loadImages(this.getImagesForStudy(currentStudy), lines);
         }
     }
     
@@ -197,7 +186,6 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     }
     
     public void displayModeChanged(int displayMode) {
-        view.imagePanel.clearImageSelection();
         Study currentStudy = getCurrentStudy();
         if(displayMode == Study.DISPLAY_MODE_INTEN && currentStudy.windowStudy == null) {
             int[] values = this.getWindowValues(0, 0);
@@ -231,7 +219,17 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     
      @Override
     public void rectSelected(int image, Rectangle2D rect) {
-        //TODO: Implement what happens on selection.
+        Study currentStudy = getCurrentStudy();
+        if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
+            if(image == 0)
+                currentStudy.selectionRects.add(rect);
+            else
+                currentStudy.reconStudies.get(image - 1).selectionRects.add(rect);
+        }
+        else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN)
+            currentStudy.windowStudy.selectionRects.add(rect);
+        else
+            currentStudy.selectionRects.add(rect);
     }
     
     /**
@@ -418,5 +416,41 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             lines.add(currentLines);
         }
         return lines;
+    }
+    
+    private ArrayList<MedicalImage> getImagesForStudy(Study currentStudy) {
+        ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
+        if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_1x1) {
+            loadImages.add((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex()));
+        }
+        else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_2x2) {
+            loadImages = getImagesFor2x2DisplayMode(currentStudy);
+        }
+        else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
+            loadImages = getImagesForReconDisplayMode(currentStudy);
+        }
+        else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
+           Study windowStudy = currentStudy.windowStudy;
+           loadImages.add((MedicalImage) windowStudy.getElement(currentStudy.getSelectedIndex()));
+        }
+        return loadImages;
+    }
+    
+    private ArrayList<ArrayList<Rectangle2D>> getSelectionsRectsForStudy(Study currentStudy) {
+        ArrayList<ArrayList<Rectangle2D>> rects = new ArrayList<ArrayList<Rectangle2D>>();
+        
+        
+        if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
+            rects.add(currentStudy.selectionRects);
+            for(int i = 0; i < currentStudy.reconStudies.size(); i++) {
+                rects.add(currentStudy.reconStudies.get(i).selectionRects);
+            }
+        }
+        else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN)
+           rects.add(currentStudy.windowStudy.selectionRects);
+        else
+            rects.add(currentStudy.selectionRects);
+        
+        return rects;
     }
 }

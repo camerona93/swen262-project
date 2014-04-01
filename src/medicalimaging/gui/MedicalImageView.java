@@ -107,59 +107,68 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
         
     @Override
     public void mouseDragged(MouseEvent e) {
-        int mouseX = e.getX();
-        int mouseY = e.getY();
-        int rectX = dragStickPoint.x;
-        int rectY = dragStickPoint.y;
-        int imageIndex = getGridIndexOfImageAt(dragStickPoint.x, dragStickPoint.y);
-        
-        //Check bounds of image
-        Point imagePoint = getLocationOfImageIndex(imageIndex);
-        if(mouseX < imagePoint.x)
-            mouseX = imagePoint.x;
-        else if(mouseX > imagePoint.x + getImageWidth())
-            mouseX = imagePoint.x + getImageWidth();
-        
-        if(mouseY < imagePoint.y)
-            mouseY = imagePoint.y;
-        else if(mouseY > imagePoint.y + getImageHeight())
-            mouseY = imagePoint.y + getImageHeight();
-        
-        int width = mouseX - rectX;
-        int height = mouseY - rectY;
-        
-        if(width < 0) {
-            width = Math.abs(width);
-            rectX -= width;
+        if(images.size() > 0) {
+            int mouseX = e.getX();
+            int mouseY = e.getY();
+            int rectX = dragStickPoint.x;
+            int rectY = dragStickPoint.y;
+            int imageIndex = getGridIndexOfImageAt(dragStickPoint.x, dragStickPoint.y);
+
+            //Check bounds of image
+            Point imagePoint = getLocationOfImageIndex(imageIndex);
+            if(mouseX < imagePoint.x)
+                mouseX = imagePoint.x;
+            else if(mouseX > imagePoint.x + getImageWidth())
+                mouseX = imagePoint.x + getImageWidth();
+
+            if(mouseY < imagePoint.y)
+                mouseY = imagePoint.y;
+            else if(mouseY > imagePoint.y + getImageHeight())
+                mouseY = imagePoint.y + getImageHeight();
+
+            int width = mouseX - rectX;
+            int height = mouseY - rectY;
+
+            if(width < 0) {
+                width = Math.abs(width);
+                rectX -= width;
+            }
+
+            if(height < 0) {
+                height = Math.abs(height);
+                rectY -= height;
+            }
+
+            dragRect.setFrame(rectX, rectY, width, height);
+            repaint();
         }
-        
-        if(height < 0) {
-            height = Math.abs(height);
-            rectY -= height;
-        }
-        
-        dragRect.setFrame(rectX, rectY, width, height);
-        repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
+        if(images.size() > 0) {
+            int x = e.getX();
+            int y = e.getY();
         
-        dragRect = new Rectangle2D.Float(x, y, 0, 0);
-        dragStickPoint = new Point(x, y);
-        dragging = true;
+            dragRect = new Rectangle2D.Float(x, y, 0, 0);
+            dragStickPoint = new Point(x, y);
+            dragging = true;
         
-        repaint();
+            repaint();
+        }
     }
     
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        dragRectList.add(dragRect);
-        dragging = false;
-        this.notifySelectionListeners(this.getGridIndexOfImageAt(e.getX(), e.getY()), dragRect);
+        if(images.size() > 0) {
+            dragRectList.add(dragRect);
+            dragging = false;
+            
+            int imagePos = this.getGridIndexOfImageAt(dragStickPoint.x, dragStickPoint.y);
+            Rectangle2D scaledRect = scaleRectToModel(dragRect, imagePos);
+            this.notifySelectionListeners(imagePos, scaledRect);
+        }
     }
 
     @Override
@@ -184,6 +193,19 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
     
     public void clearImageSelection() {
         dragRectList.clear();
+        repaint();
+    }
+    
+    public void setSelectionRects(ArrayList<ArrayList<Rectangle2D>> rects) {
+        dragRectList.clear();
+        for(int i = 0; i < rects.size(); i++) {
+            ArrayList<Rectangle2D> imageRects = rects.get(i);
+            for(int k = 0; k < imageRects.size(); k++) {
+                Rectangle2D rect = imageRects.get(k);
+                if(i < images.size())
+                    dragRectList.add(this.scaleRectToView(rect, i));
+            }
+        }
         repaint();
     }
     
@@ -278,5 +300,33 @@ public class MedicalImageView extends JPanel implements MouseMotionListener, Mou
                 }
             }
         }
+    }
+    
+    private Rectangle2D scaleRectToModel(Rectangle2D rect, int referenceImageIndex) {
+        int imageXPos = referenceImageIndex % gridSize;
+        int imageYPos = referenceImageIndex / gridSize;
+        double xMult = images.get(referenceImageIndex).getWidth(null) / (double)getImageWidth();
+        double yMult = images.get(referenceImageIndex).getHeight(null) / (double)getImageHeight();
+
+        double rectX = (rect.getX() - (imageXPos * getImageWidth())) * xMult;
+        double rectY = (rect.getY() - (imageYPos * getImageHeight())) * yMult;
+        double rectWidth = rect.getWidth() * xMult;
+        double rectHeight = rect.getHeight() * yMult;
+
+        return new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
+    }
+    
+    private Rectangle2D scaleRectToView(Rectangle2D rect, int referenceImageIndex) {
+        int imageXPos = referenceImageIndex % 2;
+        int imageYPos = referenceImageIndex / gridSize;
+        double xMult = (double)getImageWidth() / images.get(referenceImageIndex).getWidth(null);
+        double yMult = (double)getImageHeight() / images.get(referenceImageIndex).getHeight(null);
+        
+        double rectX = (rect.getX() * xMult) + (imageXPos * getImageWidth());
+        double rectY = (rect.getY() * yMult) + (imageYPos * getImageHeight());
+        double rectWidth = rect.getWidth() * xMult;
+        double rectHeight = rect.getHeight() * yMult;
+        
+        return new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight);
     }
 }
