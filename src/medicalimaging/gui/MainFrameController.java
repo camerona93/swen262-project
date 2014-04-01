@@ -97,7 +97,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             int selectedIndex = treeModel.getIndexOfChild(currentStudy, selectedImage);
             currentStudy.setSelectedIndex(selectedIndex);
             
-            //Create list of images to display
+            //Create list of images and reference lines to display
             ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
             ArrayList<ArrayList<ReferenceLine>> lines = new ArrayList<ArrayList<ReferenceLine>>();
             
@@ -105,54 +105,12 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
                 loadImages.add(selectedImage);
             }
             else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_2x2) {
-                int childCount = currentStudy.getImageCount();
-                if(selectedIndex > -1) {
-                    if(childCount <= 4) {
-                        for(int i = 0; i < childCount; i++) {
-                            loadImages.add((MedicalImage)this.treeModel.getChild(currentStudy, i));
-                        }
-                    }
-                    else if(selectedIndex >= childCount - 4) {
-                        for(int i = childCount - 4; i < childCount; i++) {
-                            loadImages.add((MedicalImage)this.treeModel.getChild(currentStudy, i));
-                        }
-                    }
-                    else {
-                        for(int i = selectedIndex; i < selectedIndex + 4; i++) {
-                            loadImages.add((MedicalImage)this.treeModel.getChild(currentStudy, i));
-                        }
-                    }
-                }
+                loadImages = getImagesFor2x2DisplayMode(currentStudy);
             }
             else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
-                ArrayList<Study> reconStudies = currentStudy.reconStudies;
-                
-                for(int i = 0; i <= currentStudy.reconStudies.size(); i++) {
-                    ArrayList<ReferenceLine> currentLines = new ArrayList<ReferenceLine>();
-                    if(i > 0) {
-                        Study reconStudy = currentStudy.reconStudies.get(i - 1);
-                        currentLines.add(reconStudy.getReferenceLineForStudy(currentStudy));
-                        for(int k = 0; k < currentStudy.reconStudies.size(); k++) {
-                            Study currentRecon = currentStudy.reconStudies.get(k);
-                            currentLines.add(reconStudy.getReferenceLineForStudy(currentRecon));
-                        }
-                    }
-                    else {
-                        currentLines.add(currentStudy.getReferenceLineForStudy(currentStudy));
-                        for(int k = 0; k < currentStudy.reconStudies.size(); k++) {
-                            currentLines.add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(k)));
-                        }
-                    }
-                    lines.add(currentLines);
-                }
-                
-                loadImages.add(selectedImage);
-                for(int i = 0; i < reconStudies.size(); i++) {
-                    Study reconStudy = reconStudies.get(i);
-                    loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.getSelectedIndex()));
-                }
+                lines = getReferenceLinesForStudy(currentStudy);
+                loadImages = getImagesForReconDisplayMode(currentStudy);
             }
-            
             else if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
                Study windowStudy = currentStudy.windowStudy;
                loadImages.add((MedicalImage) windowStudy.getElement(currentStudy.getSelectedIndex()));
@@ -401,5 +359,64 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         }
         
         return values;
+    }
+    
+    private ArrayList<MedicalImage> getImagesFor2x2DisplayMode(Study currentStudy) {
+        int childCount = currentStudy.getImageCount();
+        int selectedIndex = currentStudy.getSelectedIndex();
+        ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
+        if(selectedIndex > -1) {
+            if(childCount <= 4) {
+                for(int i = 0; i < childCount; i++) {
+                    loadImages.add((MedicalImage)this.treeModel.getChild(currentStudy, i));
+                }
+            }
+            else if(selectedIndex >= childCount - 4) {
+                for(int i = childCount - 4; i < childCount; i++) {
+                    loadImages.add((MedicalImage)this.treeModel.getChild(currentStudy, i));
+                }
+            }
+            else {
+                for(int i = selectedIndex; i < selectedIndex + 4; i++) {
+                    loadImages.add((MedicalImage)this.treeModel.getChild(currentStudy, i));
+                }
+            }
+        }
+        return loadImages;
+    }
+    
+    private ArrayList<MedicalImage> getImagesForReconDisplayMode(Study currentStudy) {
+        ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
+        ArrayList<Study> reconStudies = currentStudy.reconStudies;
+        
+        loadImages.add((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex()));
+        for(int i = 0; i < reconStudies.size(); i++) {
+            Study reconStudy = reconStudies.get(i);
+            loadImages.add((MedicalImage)reconStudy.getElement(reconStudy.getSelectedIndex()));
+        }
+        return loadImages;
+    }
+    
+    private ArrayList<ArrayList<ReferenceLine>> getReferenceLinesForStudy(Study currentStudy) {
+        ArrayList<ArrayList<ReferenceLine>> lines = new ArrayList<ArrayList<ReferenceLine>>();
+        for(int i = 0; i <= currentStudy.reconStudies.size(); i++) {
+            ArrayList<ReferenceLine> currentLines = new ArrayList<ReferenceLine>();
+            if(i > 0) {
+                Study reconStudy = currentStudy.reconStudies.get(i - 1);
+                currentLines.add(reconStudy.getReferenceLineForStudy(currentStudy));
+                for(int k = 0; k < currentStudy.reconStudies.size(); k++) {
+                    Study currentRecon = currentStudy.reconStudies.get(k);
+                    currentLines.add(reconStudy.getReferenceLineForStudy(currentRecon));
+                }
+            }
+            else {
+                currentLines.add(currentStudy.getReferenceLineForStudy(currentStudy));
+                for(int k = 0; k < currentStudy.reconStudies.size(); k++) {
+                    currentLines.add(currentStudy.getReferenceLineForStudy(currentStudy.reconStudies.get(k)));
+                }
+            }
+            lines.add(currentLines);
+        }
+        return lines;
     }
 }

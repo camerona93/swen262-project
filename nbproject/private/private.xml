@@ -5,9 +5,8 @@
         <group>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrameController.java</file>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MedicalImageView.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrame.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MedicalImageViewProtocol.java</file>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/model/Study.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/model/ReferenceLine.java</file>
         </group>
     </open-files>
 </project-private>
