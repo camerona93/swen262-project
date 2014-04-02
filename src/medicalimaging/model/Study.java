@@ -201,8 +201,4 @@ public class Study extends StudyElement{
     public static final int DISPLAY_MODE_2x2 = 2;
     public static final int DISPLAY_MODE_RECON = 3;
     public static final int DISPLAY_MODE_INTEN = 4;
-    
-    public static final int ORIENTATION_XY = 1;
-    public static final int ORIENTATION_XZ = 2;
-    public static final int ORIENTATION_YZ = 3;
 }
