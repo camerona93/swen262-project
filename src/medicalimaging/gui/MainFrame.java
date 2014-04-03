@@ -9,6 +9,8 @@ package medicalimaging.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
@@ -24,7 +26,7 @@ import medicalimaging.model.StudyElement;
  *
  * @author ericlee
  */
-public class MainFrame extends javax.swing.JFrame implements TreeSelectionListener, MouseWheelListener{
+public class MainFrame extends javax.swing.JFrame implements TreeSelectionListener, MouseWheelListener, KeyListener{
 
     /**
      * Creates new form MainFrame
@@ -43,6 +45,8 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         JLabel placeHolder = new JLabel("");
         placeHolder.setPreferredSize(new Dimension(imagePanel.getWidth(), imagePanel.getWidth()));
         imagePanel.add(placeHolder);
+        imagePanel.addKeyListener(this);
+        studyTree.addKeyListener(this);
     }
     
     protected void setTreeModel(TreeModel model) {
@@ -271,5 +275,21 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private javax.swing.JToolBar toolbar;
     private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        if(e.getKeyChar() == 'r'){
+            System.out.println("Here");
+            delegate.refreshKeyTyped();
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
 
 }
