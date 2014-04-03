@@ -61,7 +61,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
 
     @Override
     public void loadStudyButtonPressed() {
-        loadStudy(null);
+        loadStudy();
     }
 
     @Override
@@ -139,7 +139,9 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     @Override
     public void refreshKeyTyped(){
         int[] values = getWindowValues(0,0);
-        loadStudy(values);
+        Study currStudy = getCurrentStudy();
+        currStudy.windowStudy = new IntensityStudyLoader(currStudy, "Window", values[0], values[1]).execute();
+        view.refreshImages();
     }
     
     private void mouseScrollTree(int magnitude) {
@@ -268,33 +270,22 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     /**
      * Loads a study to display in the frame
      */
-    private void loadStudy(int[] val) {
+    private void loadStudy() {
         //Save the current Study
         if(getCurrentStudy().studyLoader != null) {
             saveStudy();
         }
         
-        Study loadStudy;
-        int fcReturn;
-        if(val == null){
-            this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fcReturn = fileChooser.showDialog(view, null);
-        }
-        else{
-            fcReturn = JFileChooser.APPROVE_OPTION;
-        }
+        this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int fcReturn = fileChooser.showDialog(view, null);
         
         if(fcReturn == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String studyPath = selectedFile.getAbsolutePath();
             StudyLoader newLoader = new LocalStudyLoader(studyPath);
-            loadStudy = newLoader.execute();
+            Study loadStudy = newLoader.execute();
             if(loadStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
-                int[] values;
-                if(val != null)
-                    values = val;
-                else
-                    values = getWindowValues(fcReturn, fcReturn);
+                int[] values = getWindowValues(fcReturn, fcReturn);
                 if(values[0] > -1)
                     loadStudy.windowStudy = new IntensityStudyLoader(loadStudy, "Window", values[0], values[1]).execute();
                 else
