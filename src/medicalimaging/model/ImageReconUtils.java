@@ -167,7 +167,7 @@ public class ImageReconUtils {
     }
     
     private static int generateWindowedScaledColor(int color, int low, int high) {
-        double slope = 255 / (int)(high - low);
+        double slope = 255.0 / (double)(high - low);
         int returnValue =  (int)(slope * (color - low));
         return returnValue;
     }
