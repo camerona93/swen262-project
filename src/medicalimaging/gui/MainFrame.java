@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -47,6 +48,10 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         imagePanel.add(placeHolder);
         imagePanel.addKeyListener(this);
         studyTree.addKeyListener(this);
+        
+        //Set key pressed states
+        keyPressedIndex = 0;
+        keysPressed = new int[5];
     }
     
     protected void setTreeModel(TreeModel model) {
@@ -262,7 +267,40 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         }
     }
     
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        if(keyPressedIndex < keysPressed.length) {
+            keysPressed[keyPressedIndex] = keyCode;
+            keyPressedIndex++;
+        }
+        
+        System.out.println(Arrays.toString(keysPressed));
+        
+        //Compare vs key bindings
+        if(keysPressed[0] == KeyEvent.VK_CONTROL && keysPressed[1] == KeyEvent.VK_SHIFT && keysPressed[2] == KeyEvent.VK_W) {
+            keysPressed = new int[5];
+            keyPressedIndex = 0; 
+            delegate.refreshKeyTyped();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.out.println("Key Released");
+        keysPressed = new int[5];
+        keyPressedIndex = 0;
+    }
+    
     protected MainFrameViewProtocol delegate;
+    
+    private int[] keysPressed;
+    private int keyPressedIndex;
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyButton;
     protected javax.swing.JComboBox displayModeSelect;
@@ -275,21 +313,5 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
     private javax.swing.JToolBar toolbar;
     private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        if(e.getKeyChar() == 'r'){
-            System.out.println("Here");
-            delegate.refreshKeyTyped();
-        }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
 
 }

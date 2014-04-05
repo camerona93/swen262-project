@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
 import medicalimaging.model.ReferenceLine;
@@ -138,10 +137,16 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     
     @Override
     public void refreshKeyTyped(){
-        int[] values = getWindowValues(0,0);
-        Study currStudy = getCurrentStudy();
-        currStudy.windowStudy = new IntensityStudyLoader(currStudy, "Window", values[0], values[1]).execute();
-        view.refreshImages();
+        Study currentStudy = getCurrentStudy();
+        
+        if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
+            int[] values = getWindowValues(0,0);
+        
+            if(values[0] > -1) {
+                currentStudy.windowStudy = new IntensityStudyLoader(currentStudy, "Window", values[0], values[1]).execute();
+                view.refreshImages();
+            }
+        }
     }
     
     private void mouseScrollTree(int magnitude) {
