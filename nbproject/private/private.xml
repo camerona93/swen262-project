@@ -3,7 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrameController.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/model/ImageReconUtils.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/studyLoaders/IntensityStudyLoader.java</file>
             <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrame.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/WindowValuesPanel.java</file>
         </group>
     </open-files>
 </project-private>

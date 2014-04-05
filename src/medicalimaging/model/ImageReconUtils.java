@@ -65,6 +65,7 @@ public class ImageReconUtils {
                         outputImage.setRGB(x, y, Color.BLACK.getRGB());
                     else {
                         int newColor = generateWindowedScaledColor(currentColor.getBlue(), low, high);
+                        System.out.println(Integer.toString(newColor) + " " + Integer.toString(currentColor.getBlue()));
                         outputImage.setRGB(x, y, new Color(newColor, newColor, newColor).getRGB());
                     }
                 }
@@ -166,7 +167,7 @@ public class ImageReconUtils {
     }
     
     private static int generateWindowedScaledColor(int color, int low, int high) {
-        double slope = 255 / (high - low);
+        double slope = 255 / (int)(high - low);
         int returnValue =  (int)(slope * (color - low));
         return returnValue;
     }
