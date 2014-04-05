@@ -279,8 +279,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
             keyPressedIndex++;
         }
         
-        System.out.println(Arrays.toString(keysPressed));
-        
         //Compare vs key bindings
         if(keysPressed[0] == KeyEvent.VK_CONTROL && keysPressed[1] == KeyEvent.VK_SHIFT && keysPressed[2] == KeyEvent.VK_W) {
             keysPressed = new int[5];

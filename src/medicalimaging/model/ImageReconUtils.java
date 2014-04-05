@@ -6,6 +6,7 @@
 
 package medicalimaging.model;
 
+import java.awt.Color;
 import medicalimaging.imageTypes.MedicalImage;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -49,6 +50,27 @@ public class ImageReconUtils {
         bGr.dispose();
         
         return bfImage;
+    }
+    
+    public static Image windowImage(Image image, int low, int high) {
+        BufferedImage bfImage = ImageReconUtils.getBufferedImageFromImage(image);
+            BufferedImage outputImage = new BufferedImage(bfImage.getWidth(null), bfImage.getWidth(null), BufferedImage.TYPE_INT_ARGB);
+            
+            for(int y = 0; y < bfImage.getHeight() - 1; y++) {
+                for(int x = 0; x < bfImage.getWidth() - 1; x++) {
+                    Color currentColor = new Color(bfImage.getRGB(x, y), false);
+                    if(currentColor.getBlue() > high)
+                        outputImage.setRGB(x, y, Color.WHITE.getRGB());
+                    else if(currentColor.getBlue() < low)
+                        outputImage.setRGB(x, y, Color.BLACK.getRGB());
+                    else {
+                        int newColor = generateWindowedScaledColor(currentColor.getBlue(), low, high);
+                        outputImage.setRGB(x, y, new Color(newColor, newColor, newColor).getRGB());
+                    }
+                }
+            }
+            
+            return outputImage;
     }
     
     public static int[] calcCrossProduct(int[] a, int[] b) {
@@ -142,4 +164,11 @@ public class ImageReconUtils {
         
         return(sum); 
     }
+    
+    private static int generateWindowedScaledColor(int color, int low, int high) {
+        double slope = 255 / (high - low);
+        int returnValue =  (int)(slope * (color - low));
+        return returnValue;
+    }
+    
 }
