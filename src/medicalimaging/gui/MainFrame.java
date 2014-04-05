@@ -289,7 +289,6 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
 
     @Override
     public void keyReleased(KeyEvent e) {
-        System.out.println("Key Released");
         keysPressed = new int[5];
         keyPressedIndex = 0;
     }

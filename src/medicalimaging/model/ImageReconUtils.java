@@ -65,7 +65,6 @@ public class ImageReconUtils {
                         outputImage.setRGB(x, y, Color.BLACK.getRGB());
                     else {
                         int newColor = generateWindowedScaledColor(currentColor.getBlue(), low, high);
-                        System.out.println(Integer.toString(newColor) + " " + Integer.toString(currentColor.getBlue()));
                         outputImage.setRGB(x, y, new Color(newColor, newColor, newColor).getRGB());
                     }
                 }
