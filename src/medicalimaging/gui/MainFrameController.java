@@ -6,7 +6,7 @@
 
 package medicalimaging.gui;
 
-import java.awt.GridLayout;
+import java.awt.Image;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
 import medicalimaging.studyLoaders.LocalStudyLoader;
@@ -16,11 +16,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
 import medicalimaging.model.AnalysisListener;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
@@ -29,7 +25,7 @@ import medicalimaging.model.Study;
 import medicalimaging.model.StudyElement;
 import medicalimaging.model.StudyTreeModel;
 import medicalimaging.model.StudyUndoableOperation;
-import medicalimaging.studyLoaders.IntensityStudyLoader;
+import medicalimaging.model.WindowBoundsStudyUndoableOperation;
 
 /**
  *
@@ -139,10 +135,15 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     
     @Override
     public void refreshKeyTyped(){
-        int[] values = getWindowValues(0,0);
-        Study currStudy = getCurrentStudy();
-        currStudy.windowStudy = new IntensityStudyLoader(currStudy, "Window", values[0], values[1]).execute();
-        view.refreshImages();
+        Study currentStudy = getCurrentStudy();
+        
+        if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
+            int[] values = getWindowValues(0,0, ((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex())).loadImage().getImage());
+        
+            if(values[0] > -1) {
+                generateWindowStudy(currentStudy, values[0], values[1]);
+            }
+        }
     }
     
     private void mouseScrollTree(int magnitude) {
@@ -198,9 +199,9 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     public void displayModeChanged(int displayMode) {
         Study currentStudy = getCurrentStudy();
         if(displayMode == Study.DISPLAY_MODE_INTEN && currentStudy.windowStudy == null) {
-            int[] values = this.getWindowValues(0, 0);
+            int[] values = this.getWindowValues(0, 0, ((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex())).loadImage().getImage());
             if(values[0] > -1)
-                currentStudy.windowStudy = new IntensityStudyLoader(currentStudy, "Window", values[0], values[1]).execute();
+                generateWindowStudy(currentStudy, values[0], values[1]);
             else
                 displayMode = currentStudy.getDisplayMode();
         }
@@ -291,9 +292,10 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             StudyLoader newLoader = new LocalStudyLoader(studyPath);
             Study loadStudy = newLoader.execute();
             if(loadStudy.getDisplayMode() == Study.DISPLAY_MODE_INTEN) {
-                int[] values = getWindowValues(fcReturn, fcReturn);
+                Image sampleImage = ((MedicalImage)loadStudy.getElement(loadStudy.getSelectedIndex())).loadImage().getImage();
+                int[] values = getWindowValues(fcReturn, fcReturn, sampleImage);
                 if(values[0] > -1)
-                    loadStudy.windowStudy = new IntensityStudyLoader(loadStudy, "Window", values[0], values[1]).execute();
+                    generateWindowStudy(loadStudy, values[0], values[1]);
                 else
                     loadStudy.setDisplayMode(Study.DISPLAY_MODE_1x1);
             }
@@ -305,6 +307,22 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         }
         
         //Update view
+    }
+    
+    private void generateWindowStudy(Study study, int low, int high) {
+        WindowBoundsStudyUndoableOperation operation;
+        operation = new WindowBoundsStudyUndoableOperation(study, high, low) {
+            @Override
+            public void onExecute() {
+                //view.refreshImages();
+            }
+            @Override
+            public void onUndo() {
+                view.refreshImages();
+            }
+        };
+        operation.execute();
+        study.addUndoTask(operation);
     }
     
     /**
@@ -345,25 +363,18 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return (Study)treeModel.getRoot();
     }
     
-    private int[] getWindowValues(int defaultLow, int defaultHight) {
+    private int[] getWindowValues(int defaultLow, int defaultHight, Image sampleImage) {
         int[] values = new int[]{-1, -1};
-        JPanel panel = new JPanel(new GridLayout(0, 2));
-        JTextField lowTextField = new JTextField(Integer.toString(defaultLow), 3);
-        JTextField highTextField = new JTextField(Integer.toString(defaultHight), 3);
-        
-        panel.add(new JLabel("Low: "));
-        panel.add(lowTextField);
-        panel.add(new JLabel("High: "));
-        panel.add(highTextField);
+        WindowValuesPanel panel = new WindowValuesPanel(sampleImage, 0, 0);
         
         String message = "Please enter values for the window mode: ";
         int result = JOptionPane.showConfirmDialog(null, panel, message, JOptionPane.OK_CANCEL_OPTION);
         if(result != JOptionPane.CANCEL_OPTION) {
-            int low = Integer.parseInt(lowTextField.getText());
-            int high = Integer.parseInt(highTextField.getText());
+            int low = Integer.parseInt(panel.lowValueTextField.getText());
+            int high = Integer.parseInt(panel.highValueTextField.getText());
             if(low >= high) {
                 JOptionPane.showMessageDialog(null, "Invalid input. Must be a value between 0 - 255", "", JOptionPane.ERROR_MESSAGE);
-                getWindowValues(low, high);
+                getWindowValues(low, high, sampleImage);
             }
             else {
                 values[0] = low;

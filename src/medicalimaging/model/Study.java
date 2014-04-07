@@ -85,7 +85,8 @@ public class Study extends StudyElement{
     
     public void undoTask() {
         if(undoStack.size() > 0) {
-            StudyUndoableOperation operation = undoStack.remove(0);
+            int lastIndex = undoStack.size() - 1;
+            StudyUndoableOperation operation = undoStack.remove(lastIndex);
             operation.undo();
         }
     }

@@ -39,22 +39,8 @@ public class IntensityStudyLoader implements StudyLoader{
         
         for(int i = 0; i < study.getImageCount(); i++) {
             Image image = ((MedicalImage)study.getElement(i)).loadImage().getImage();
-            BufferedImage bfImage = ImageReconUtils.getBufferedImageFromImage(image);
-            BufferedImage outputImage = new BufferedImage(bfImage.getWidth(null), bfImage.getWidth(null), BufferedImage.TYPE_INT_ARGB);
             
-            for(int y = 0; y < bfImage.getHeight() - 1; y++) {
-                for(int x = 0; x < bfImage.getWidth() - 1; x++) {
-                    Color currentColor = new Color(bfImage.getRGB(x, y), false);
-                    if(currentColor.getBlue() > high.getBlue())
-                        outputImage.setRGB(x, y, Color.WHITE.getRGB());
-                    else if(currentColor.getBlue() < low.getBlue())
-                        outputImage.setRGB(x, y, Color.BLACK.getRGB());
-                    else {
-                        int newColor = generateScaledColor(currentColor.getBlue());
-                        outputImage.setRGB(x, y, new Color(newColor, newColor, newColor).getRGB());
-                    }
-                }
-            }
+            Image outputImage = ImageReconUtils.windowImage(image, low.getBlue(), high.getBlue());
             
             MedicalImage newImage = new PreLoadedImage(new ImageIcon(outputImage));
             returnStudy.addElement(newImage);
@@ -75,10 +61,11 @@ public class IntensityStudyLoader implements StudyLoader{
         return true;
     }
     
-    private int generateScaledColor(int color) {
-        double slope = 255 / (high.getBlue() - low.getBlue());
-        int returnValue =  (int)(slope * (color - low.getBlue()));
-        return returnValue;
+    public int getLowVal() {
+        return low.getBlue();
     }
     
+    public int getHighVal() {
+        return high.getBlue();
+    }
 }

@@ -22,6 +22,12 @@
             <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/AnalysisFrame.java</file>
             <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/MedicalImaging.java</file>
             <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/imageTypes/AcrImage.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrameController.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/model/DisplayModeStudyUndoableOperation.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/model/ImageReconUtils.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/studyLoaders/IntensityStudyLoader.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrame.java</file>
+            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/WindowValuesPanel.java</file>
         </group>
     </open-files>
 </project-private>

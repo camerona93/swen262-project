@@ -10,7 +10,15 @@ package medicalimaging.model;
  *
  * @author ericlee
  */
-public interface StudyUndoableOperation {
-    void execute();
-    void undo();
+public abstract class StudyUndoableOperation {
+    protected Study study;
+    
+    public StudyUndoableOperation(Study study) {
+        this.study = study;
+    }
+    
+    abstract void execute();
+    abstract void undo();
+    abstract void onExecute();
+    abstract void onUndo();
 }
