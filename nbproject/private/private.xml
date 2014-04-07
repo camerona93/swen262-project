@@ -3,10 +3,25 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MainFrameController.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MedicalImageView.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/gui/MedicalImageViewProtocol.java</file>
-            <file>file:/Volumes/Media/Documents/RIT/Subsystems/swen262-project/src/medicalimaging/model/Study.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/MedicalImageView.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/model/Study.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/MedicalImageViewProtocol.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/imageTypes/MedicalImage.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/MainFrameController.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/studyLoaders/ReconStudyLoader.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/histogramLibrary/AdaptiveHistogram.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/model/ImageReconUtils.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/model/AnalysisListener.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/MainFrameViewProtocol.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/HistogramView.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/model/ReferenceLine.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/AnalysisController.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/model/StudyTreeModel.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/model/StudyElement.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/MainFrame.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/gui/AnalysisFrame.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/MedicalImaging.java</file>
+            <file>file:/C:/Users/Cameron/Documents/GitHub/swen262-project/src/medicalimaging/imageTypes/AcrImage.java</file>
         </group>
     </open-files>
 </project-private>

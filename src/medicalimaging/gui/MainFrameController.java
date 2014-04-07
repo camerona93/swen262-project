@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.tree.TreePath;
+import medicalimaging.model.AnalysisListener;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
 import medicalimaging.model.ReferenceLine;
 import medicalimaging.model.Study;
@@ -239,6 +240,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             currentStudy.windowStudy.selectionRects.add(rect);
         else
             currentStudy.selectionRects.add(rect);
+        
+        AnalysisController ctrl = new AnalysisController();
+        currentStudy.analysisListeners.add(ctrl);
+        ctrl.newAnalysis(currentStudy, rect);
+        
     }
     
     /**

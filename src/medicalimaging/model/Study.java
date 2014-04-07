@@ -26,6 +26,7 @@ public class Study extends StudyElement{
     protected transient ArrayList<StudyUndoableOperation> undoStack;
     
     public int[] orientation;
+    public transient ArrayList<AnalysisListener> analysisListeners;
     public transient StudyLoader studyLoader;
     public transient ArrayList<Study> reconStudies;
     public transient ArrayList<Rectangle2D> selectionRects;
@@ -37,6 +38,7 @@ public class Study extends StudyElement{
         undoStack = new ArrayList<StudyUndoableOperation>();
         reconStudies = new ArrayList<Study>();
         selectionRects = new ArrayList<Rectangle2D>();
+        analysisListeners = new ArrayList<AnalysisListener>();
         displayMode = 1;
         selectedIndex = 0;
         indexOfFirstStudy = 0;
