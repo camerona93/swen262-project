@@ -14,4 +14,5 @@ import java.awt.geom.Rectangle2D;
  */
 public interface MedicalImageViewProtocol {
     public void rectSelected(int image, Rectangle2D rect);
+    public void rectDeselected();
 }

@@ -9,38 +9,56 @@ package medicalimaging.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 import medicalimaging.histogramLibrary.*;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.model.AnalysisListener;
 import medicalimaging.model.Study;
-import medicalimaging.gui.HistogramView;
 
 /**
  *
  * @author Cameron
  */
-public class AnalysisController extends AnalysisListener {
-
+public class AnalysisController implements AnalysisListener, WindowListener {
+    private AnalysisFrame frame;
+    private Rectangle2D rect;
+    private Study study;
+    private MedicalImageViewProtocol delegate;
+    
     @Override
-    public void newAnalysis(Study study, Rectangle2D rect) {
-        AnalysisFrame frame = new AnalysisFrame();
-        
-        AdaptiveHistogram h = new AdaptiveHistogram();
-        int[] pixels = getPixelsInRect(toBufferedImage(((MedicalImage)(study.getElement(study.getSelectedIndex()))).loadImage().getImage()), rect);
-        for (int a : pixels ) {
-            h.addValue(a);
-        }
-        
-        
-        frame.histogramView.setHistogram(h.toTable());
+    public void newAnalysis(Study astudy, Rectangle2D arect, MedicalImageViewProtocol adelegate) {
+        frame = new AnalysisFrame();
+        frame.addWindowListener(this);
+        study = astudy;
+        rect = arect;
+        delegate = adelegate;
+
+        update(study);
         
         frame.setAlwaysOnTop(true);
         frame.setVisible(true);
         
+    }
+    
+    @Override
+    public void update(Study astudy) {
+        study = astudy;
+        AdaptiveHistogram h = new AdaptiveHistogram();
+        float average = 0;
+        int[] pixels = getPixelsInRect(toBufferedImage(((MedicalImage)(study.getElement(study.getSelectedIndex()))).loadImage().getImage()), rect);
+        for (int a : pixels ) {
+            average += a;
+            h.addValue(a);
+        }
+        
+        average /= pixels.length;
+        
+        
+        frame.setHistogram(h.internalMap, average);
     }
     
     private static int[] getPixelsInRect (BufferedImage img, Rectangle2D rect) {
@@ -78,6 +96,31 @@ public class AnalysisController extends AnalysisListener {
         // Return the buffered image
         return bimage;
     }
+
+    @Override
+    public void windowOpened(WindowEvent e) {    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        study.selectionRects.remove(rect);
+        study.analysisListeners.remove(this);
+        delegate.rectDeselected();
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {    }
     
     
    

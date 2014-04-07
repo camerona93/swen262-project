@@ -106,6 +106,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             //Update GUI
             view.updateGUIForState(currentStudy.getDisplayMode());
             view.imagePanel.loadImages(this.getImagesForStudy(currentStudy), lines);
+            
+            //Notify listeners
+            for ( AnalysisListener a : currentStudy.analysisListeners ) {
+                a.update(currentStudy);
+            }
         }
     }
     
@@ -228,6 +233,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         }
     }
     
+    @Override
+    public void rectDeselected() {
+        view.refreshImages();
+    }
+    
      @Override
     public void rectSelected(int image, Rectangle2D rect) {
         Study currentStudy = getCurrentStudy();
@@ -244,7 +254,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         
         AnalysisController ctrl = new AnalysisController();
         currentStudy.analysisListeners.add(ctrl);
-        ctrl.newAnalysis(currentStudy, rect);
+        ctrl.newAnalysis(currentStudy, rect, this);
         
     }
     

@@ -14,6 +14,7 @@ package medicalimaging.histogramLibrary;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class implements a histogram that adapts to an unknown data distribution.
@@ -29,6 +30,8 @@ import java.util.ArrayList;
  */
 public class AdaptiveHistogram implements Serializable {
 
+    public HashMap<String, Integer> internalMap;
+    
     private static final long serialVersionUID = -1L;
     private long totalCount;     // total number of data points
     private HistogramNode root;  // root of the tree
@@ -37,6 +40,7 @@ public class AdaptiveHistogram implements Serializable {
      * Class constructor.
      */
     public AdaptiveHistogram() {
+        internalMap = new HashMap<>();
         root = null;
         reset();
     }
@@ -45,10 +49,7 @@ public class AdaptiveHistogram implements Serializable {
      * Erases all data from the histogram.
      */
     public void reset() {
-        if (null != root) {
-            root.reset();
-            root = null;
-        }
+        internalMap = new HashMap<>();
         totalCount = 0;
     }
 
@@ -56,12 +57,13 @@ public class AdaptiveHistogram implements Serializable {
      * Adds a data point to the histogram.
      * @param value the data point to add.
      */
-    public synchronized void addValue(float value) {
+    public synchronized void addValue(int value) {
         totalCount++;
-        if (null == root) {
-            root = new HistogramDataNode();
+        if ( null == internalMap.get("" + value) ) {
+            internalMap.put(""+value, 1);
+        } else {
+            internalMap.put(""+value, internalMap.get(""+value) + 1);
         }
-        root = root.addValue(this, value);
     }
 
     /**

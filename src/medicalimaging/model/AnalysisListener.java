@@ -7,13 +7,13 @@
 package medicalimaging.model;
 
 import java.awt.geom.Rectangle2D;
+import medicalimaging.gui.MedicalImageViewProtocol;
 
 /**
  *
  * @author Cameron
  */
-public abstract class AnalysisListener {
-    
-     public abstract void newAnalysis(Study study, Rectangle2D rect);
-     
+public interface AnalysisListener {
+     public void newAnalysis(Study astudy, Rectangle2D arect, MedicalImageViewProtocol delegate);
+     public void update(Study study);
 }

@@ -9,6 +9,8 @@ package medicalimaging.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import medicalimaging.histogramLibrary.Cell;
 
 /**
@@ -17,16 +19,16 @@ import medicalimaging.histogramLibrary.Cell;
  */
 public class HistogramView extends javax.swing.JPanel {
     
-    public ArrayList<Cell> histogram;
+    public HashMap<String, Integer> histogram;
     /*
      * Creates new form AnalysisView
      */
     public HistogramView() {
         initComponents();
-        histogram = new ArrayList<>();
+        histogram = new HashMap<>();
     }
 
-    public void setHistogram(ArrayList<Cell> h) {
+    public void setHistogram(HashMap<String, Integer> h) {
         histogram = h;
         this.repaint();
     }
@@ -35,35 +37,51 @@ public class HistogramView extends javax.swing.JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
+        Object[] akeys = histogram.keySet().toArray();
+        int[] intKeys = new int[akeys.length];
+        for ( int j = 0; j < akeys.length; j++ ) {
+            intKeys[j] = Integer.parseInt((String)akeys[j]);
+        }
+        
+        Arrays.sort(intKeys);
         
         // Draw the histogram
         int maxValue = 0;
-        for ( Cell c : histogram ) {
-            maxValue = (int) Math.max(maxValue, Math.abs(c.maxValue));
+        for ( int x : intKeys ) {
+            maxValue = (int) Math.max(maxValue, histogram.get("" + x));
         }
         
+        int prevX = -1;
         int xPos = 10;
-        for ( Cell c : histogram ) {
-            int value = (int) Math.abs(c.maxValue);
+        for ( int x : intKeys ) {
+            int value = (int) histogram.get("" + x);
             
             float percentage = (float)value / (float)maxValue;
             
-            int yOffset = 10;
+            int yOffset = 0;
             int drawHeight = this.getHeight() - 10;
             int barHeight = Math.round(percentage * drawHeight - yOffset);
-            int barWidth = (int)this.getWidth() / (int) histogram.size();
-            if ( barWidth > 20 ) barWidth = 20;
+            int barWidth = (int)(this.getWidth()-30) / (int) (intKeys.length + 1);
+            if ( barWidth > 30 ) barWidth = 30;
             
             g.setColor(new Color(50, 50, 50));
             
-            int yPos = drawHeight + yOffset - barHeight;
+            int yPos = drawHeight + yOffset - barHeight - 20;
             
             g.fillRect(xPos, yPos, barWidth, barHeight);
             g.setColor(Color.DARK_GRAY);
             g.drawRect(xPos, yPos, barWidth, barHeight);
-            xPos += barWidth + 1;
             
-            System.out.println("Y Value: " + value);
+            g.setColor(Color.BLUE);
+            
+            if ( prevX < xPos - 30 || prevX == -1) {
+                g.drawString("" + x, xPos, drawHeight - 8);
+                prevX = xPos;
+            }
+            
+            
+            
+            xPos += barWidth + 1;
             
         }
         
