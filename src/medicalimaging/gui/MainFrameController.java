@@ -140,7 +140,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             int[] values = getWindowValues(0,0, ((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex())).loadImage().getImage());
         
             if(values[0] > -1) {
-                generateWindowStudy(currentStudy, values[1], values[0]);
+                generateWindowStudy(currentStudy, values[0], values[1]);
             }
         }
     }
@@ -200,7 +200,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         if(displayMode == Study.DISPLAY_MODE_INTEN && currentStudy.windowStudy == null) {
             int[] values = this.getWindowValues(0, 0, ((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex())).loadImage().getImage());
             if(values[0] > -1)
-                generateWindowStudy(currentStudy, values[1], values[0]);
+                generateWindowStudy(currentStudy, values[0], values[1]);
             else
                 displayMode = currentStudy.getDisplayMode();
         }
@@ -289,7 +289,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
                 Image sampleImage = ((MedicalImage)loadStudy.getElement(loadStudy.getSelectedIndex())).loadImage().getImage();
                 int[] values = getWindowValues(fcReturn, fcReturn, sampleImage);
                 if(values[0] > -1)
-                    generateWindowStudy(loadStudy, values[1], values[0]);
+                    generateWindowStudy(loadStudy, values[0], values[1]);
                 else
                     loadStudy.setDisplayMode(Study.DISPLAY_MODE_1x1);
             }
