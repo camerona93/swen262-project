@@ -60,4 +60,12 @@ public class IntensityStudyLoader implements StudyLoader{
     public boolean copyStudy(Study copyStudy, String copyPath) {
         return true;
     }
+    
+    public int getLowVal() {
+        return low.getBlue();
+    }
+    
+    public int getHighVal() {
+        return high.getBlue();
+    }
 }

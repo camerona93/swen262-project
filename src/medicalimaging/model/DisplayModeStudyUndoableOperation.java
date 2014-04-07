@@ -10,13 +10,12 @@ package medicalimaging.model;
  *
  * @author ericlee
  */
-public abstract class DisplayModeStudyUndoableOperation implements StudyUndoableOperation{
-    private Study study;
+public abstract class DisplayModeStudyUndoableOperation extends StudyUndoableOperation{
     protected final int currentMode;
     protected final int previousMode;
     
     public DisplayModeStudyUndoableOperation(Study _study, int changeState) {
-        study = _study;
+        super(_study);
         currentMode = changeState;
         previousMode = study.displayMode;
     }
@@ -31,6 +30,8 @@ public abstract class DisplayModeStudyUndoableOperation implements StudyUndoable
         onUndo();
     }
     
+    @Override
     public abstract void onExecute();
+    @Override
     public abstract void onUndo();
 }

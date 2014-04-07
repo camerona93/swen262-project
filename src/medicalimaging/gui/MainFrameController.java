@@ -6,7 +6,6 @@
 
 package medicalimaging.gui;
 
-import java.awt.GridLayout;
 import java.awt.Image;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.studyLoaders.StudyLoader;
@@ -16,12 +15,8 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.tree.TreePath;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
 import medicalimaging.model.ReferenceLine;
@@ -29,7 +24,7 @@ import medicalimaging.model.Study;
 import medicalimaging.model.StudyElement;
 import medicalimaging.model.StudyTreeModel;
 import medicalimaging.model.StudyUndoableOperation;
-import medicalimaging.studyLoaders.IntensityStudyLoader;
+import medicalimaging.model.WindowBoundsStudyUndoableOperation;
 
 /**
  *
@@ -145,8 +140,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             int[] values = getWindowValues(0,0, ((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex())).loadImage().getImage());
         
             if(values[0] > -1) {
-                currentStudy.windowStudy = new IntensityStudyLoader(currentStudy, "Window", values[0], values[1]).execute();
-                view.refreshImages();
+                generateWindowStudy(currentStudy, values[1], values[0]);
             }
         }
     }
@@ -206,7 +200,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         if(displayMode == Study.DISPLAY_MODE_INTEN && currentStudy.windowStudy == null) {
             int[] values = this.getWindowValues(0, 0, ((MedicalImage)currentStudy.getElement(currentStudy.getSelectedIndex())).loadImage().getImage());
             if(values[0] > -1)
-                currentStudy.windowStudy = new IntensityStudyLoader(currentStudy, "Window", values[0], values[1]).execute();
+                generateWindowStudy(currentStudy, values[1], values[0]);
             else
                 displayMode = currentStudy.getDisplayMode();
         }
@@ -295,7 +289,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
                 Image sampleImage = ((MedicalImage)loadStudy.getElement(loadStudy.getSelectedIndex())).loadImage().getImage();
                 int[] values = getWindowValues(fcReturn, fcReturn, sampleImage);
                 if(values[0] > -1)
-                    loadStudy.windowStudy = new IntensityStudyLoader(loadStudy, "Window", values[0], values[1]).execute();
+                    generateWindowStudy(loadStudy, values[1], values[0]);
                 else
                     loadStudy.setDisplayMode(Study.DISPLAY_MODE_1x1);
             }
@@ -307,6 +301,22 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         }
         
         //Update view
+    }
+    
+    private void generateWindowStudy(Study study, int low, int high) {
+        WindowBoundsStudyUndoableOperation operation;
+        operation = new WindowBoundsStudyUndoableOperation(study, high, low) {
+            @Override
+            public void onExecute() {
+                //view.refreshImages();
+            }
+            @Override
+            public void onUndo() {
+                view.refreshImages();
+            }
+        };
+        operation.execute();
+        study.addUndoTask(operation);
     }
     
     /**
