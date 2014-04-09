@@ -9,7 +9,8 @@ package medicalimaging.studyLoaders;
 import medicalimaging.model.Study;
 
 /**
- *
+ * Outlines methods for all study handlers.  All study handlers must be able to
+ * to load(execute), save and copy a study.
  * @author ericlee
  */
 public interface StudyLoader {

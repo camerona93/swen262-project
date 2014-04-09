@@ -13,15 +13,24 @@ import medicalimaging.imageTypes.PreLoadedImage;
 import medicalimaging.model.Study;
 
 /**
- *
+ * Generates a reconstructed along the y-axis
  * @author ericlee
  */
 public class FrontStudyLoader extends ReconStudyLoader{
 
+    /**
+     * Constructor
+     * @param _studyName the desired name of the generated study
+     * @param _render 3D render of the study
+     */
     public FrontStudyLoader(String _studyName, int[][][] _render) {
         super(_studyName, _render);
     }
-
+    
+    /**
+     * Loads the study
+     * @return Study the generated study.
+     */
     public Study execute() {
         Study loadStudy = new Study(studyName);
         for(int z = 0; z < render[0][0].length; z++) {

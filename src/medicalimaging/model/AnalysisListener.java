@@ -10,7 +10,7 @@ import java.awt.geom.Rectangle2D;
 import medicalimaging.gui.MedicalImageViewProtocol;
 
 /**
- *
+ * Interface for Listener to see when the selected index changes
  * @author Cameron
  */
 public interface AnalysisListener {

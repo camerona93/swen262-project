@@ -21,16 +21,30 @@ public class StudyTreeModel implements TreeModel{
     private Study rootStudy;
     private ArrayList<TreeModelListener> listeners;
     
+    /**
+     * Constructor
+     * @param root Study that represents the root of the tree. 
+     */
     public StudyTreeModel(Study root) {
         this.rootStudy = root;
         listeners = new ArrayList<TreeModelListener>();
     }
 
+    /**
+     * Gets the root of the tree
+     * @return (Study) the root study
+     */
     @Override
     public Object getRoot() {
         return this.rootStudy;
     }
 
+    /**
+     * Gets the child of the parent at the index
+     * @param parent (Study) 
+     * @param index index of child
+     * @return (StudyElement) the child at the index
+     */
     @Override
     public Object getChild(Object parent, int index) {
         if(parent instanceof Study) {
@@ -40,6 +54,11 @@ public class StudyTreeModel implements TreeModel{
         return null;
     }
 
+    /**
+     * Counts the children for a parent
+     * @param parent (StudyElement) parent to get the count for.
+     * @return (int) the count of children
+     */
     @Override
     public int getChildCount(Object parent) {
         if(parent instanceof Study) {
@@ -49,11 +68,21 @@ public class StudyTreeModel implements TreeModel{
         return 0;
     }
 
+    /**
+     * Checks if StudyElement is a leaf of the tree.
+     * @param node (StudyElement) the object to check
+     * @return (boolean) True is leaf false if not
+     */
     @Override
     public boolean isLeaf(Object node) {
         return node instanceof MedicalImage;
     }
 
+    /**
+     * Called when the the tree changes
+     * @param path
+     * @param newValue 
+     */
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
         TreeModelEvent event = new TreeModelEvent(newValue, path);
@@ -62,6 +91,12 @@ public class StudyTreeModel implements TreeModel{
         }
     }
 
+    /**
+     * Gets the index of the child within the parent
+     * @param parent (StudyElement) parent to search
+     * @param child (StudyElement) child to find
+     * @return (int) the index of the child
+     */
     @Override
     public int getIndexOfChild(Object parent, Object child) {
         if(parent instanceof Study) {
@@ -88,6 +123,10 @@ public class StudyTreeModel implements TreeModel{
         }
     }
     
+    /**
+     * Sets the root of the tree.
+     * @param study (Study) the study to set as the root.
+     */
     public void setRootStudy(Study study) {
         this.rootStudy = study;
         this.valueForPathChanged(new TreePath(this.rootStudy), this.rootStudy);
@@ -115,6 +154,11 @@ public class StudyTreeModel implements TreeModel{
         return null;
     }
     
+    /**
+     * Gets the total number of rows for an element
+     * @param start (Study) element to get rows for.
+     * @return 
+     */
     public int getNumRowsForElement(Study start) {
         int rowCounter = 0;
         for(int i = 0; i < start.getElementCount(); i++) {
@@ -127,6 +171,12 @@ public class StudyTreeModel implements TreeModel{
         return rowCounter; 
     }
     
+    /**
+     * Gets the row number of an element
+     * @param element (StudyElement) element to get row of
+     * @param start (StudyElement) element to start the search
+     * @return 
+     */
     public int getRowOfElement(Object element, Study start) {
         int rowCounter = 0;
         

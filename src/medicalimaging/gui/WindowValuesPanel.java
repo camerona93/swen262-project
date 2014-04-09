@@ -9,7 +9,6 @@ package medicalimaging.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,7 +18,8 @@ import javax.swing.event.DocumentListener;
 import medicalimaging.model.ImageReconUtils;
 
 /**
- *
+ * JPanel for retrieving windowing values and providing a sample image with those
+ * values.
  * @author ericlee
  */
 public class WindowValuesPanel extends JPanel implements DocumentListener{
@@ -33,6 +33,12 @@ public class WindowValuesPanel extends JPanel implements DocumentListener{
     public JTextField highValueTextField;
     private JLabel sampleImageLabel;
     
+    /**
+     * Constructor
+     * @param sampleImage (Image) sample image to perform windowing operations on
+     * @param low (int) default low window value
+     * @param high (int) default high window value
+     */
     public WindowValuesPanel(Image sampleImage, int low, int high) {
         this.defaultLow = low;
         this.defaultHigh = high;
@@ -79,6 +85,10 @@ public class WindowValuesPanel extends JPanel implements DocumentListener{
         
     }
 
+    /**
+     * Called when the text box is updated and regenerates the sample image
+     * @param e 
+     */
     @Override
     public void insertUpdate(DocumentEvent e) {
         int low = Integer.parseInt(lowValueTextField.getText());
@@ -87,8 +97,6 @@ public class WindowValuesPanel extends JPanel implements DocumentListener{
         if(low > 0 && high < 256) {
             Image image = ImageReconUtils.windowImage(sampleImage, low, high);
             sampleImageLabel.setIcon(new ImageIcon(image));
-            //revalidate();
-            //repaint();
         }
     }
 

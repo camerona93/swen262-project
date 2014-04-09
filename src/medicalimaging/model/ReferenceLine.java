@@ -10,7 +10,7 @@ import java.awt.Color;
 import java.awt.Point;
 
 /**
- *
+ * Reference line for a study
  * @author ericlee
  */
 public class ReferenceLine {
@@ -21,12 +21,24 @@ public class ReferenceLine {
     protected int xRange;
     protected int yRange;
     
+    /**
+     * Constructor
+     * @param points Start and end point
+     * @param xRange The width of the total image
+     * @param yRange The height of the total image
+     */
     public ReferenceLine(Point[] points, int xRange, int yRange) {
         this.points = points;
         this.xRange = xRange;
         this.yRange = yRange;
     }
     
+    /**
+     * Scales the line to the given height and width
+     * @param width (int) width to scale to
+     * @param height (int) height to scale to
+     * @return (Point[]) start and end point
+     */
     public Point[] getScaledStartEnd(int width, int height) {
         Point[] returnPoints = new Point[points.length];
         

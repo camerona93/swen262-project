@@ -9,7 +9,7 @@ package medicalimaging.model;
 import medicalimaging.studyLoaders.IntensityStudyLoader;
 
 /**
- *
+ * Undoable Operation for setting/changing the window bounds.
  * @author ericlee
  */
 public abstract class WindowBoundsStudyUndoableOperation extends StudyUndoableOperation{
@@ -18,6 +18,12 @@ public abstract class WindowBoundsStudyUndoableOperation extends StudyUndoableOp
     private int prevHigh;
     private int prevLow;
     
+    /**
+     * Constructor
+     * @param _study Study the study the bounds is changing on
+     * @param _high int the high window value
+     * @param _low int the low window value
+     */
     public WindowBoundsStudyUndoableOperation(Study _study, int _high, int _low) {
         super(_study);
         
@@ -34,6 +40,9 @@ public abstract class WindowBoundsStudyUndoableOperation extends StudyUndoableOp
         }
     }
     
+    /**
+     * Performs the window bounds change
+     */
     @Override
     public void execute() {
         Study newStudy = new IntensityStudyLoader(study, "Window Mode", newLow, newHigh).execute();
@@ -41,6 +50,9 @@ public abstract class WindowBoundsStudyUndoableOperation extends StudyUndoableOp
         onExecute();
     }
     
+    /**
+     * Undos the window bounds change
+     */
     @Override
     public void undo() {
         Study newStudy = new IntensityStudyLoader(study, "Window Mode", prevLow, prevHigh).execute();
@@ -48,8 +60,15 @@ public abstract class WindowBoundsStudyUndoableOperation extends StudyUndoableOp
         onUndo();
     }
     
+    /**
+     * Performed when the operation is executed.
+     */
     @Override
     public abstract void onExecute();
+    
+    /**
+     * Performed when the operation is undone.
+     */
     @Override
     public abstract void onUndo();
 }

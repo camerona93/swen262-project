@@ -12,7 +12,7 @@ import medicalimaging.studyLoaders.StudyLoader;
 import java.util.ArrayList;
 
 /**
- *
+ * Captures all data associated with a study. 
  * @author ericlee
  */
 public class Study extends StudyElement{
@@ -32,6 +32,10 @@ public class Study extends StudyElement{
     public transient ArrayList<Rectangle2D> selectionRects;
     public transient Study windowStudy;
     
+    /**
+     * Constructor
+     * @param _name (String) desired name of a study.
+     */
     public Study(String _name) {
         name = _name;
         studyElements = new ArrayList<StudyElement>();
@@ -45,16 +49,29 @@ public class Study extends StudyElement{
         orientation = new int[]{0, 1, 0};
     }
     
+    /**
+     * Gets the number of elements in a study.
+     * @return (int) number of elements
+     */
     public int getElementCount() {
         return this.studyElements.size();
     }
     
+    /**
+     * Gets the element at an index
+     * @param index (int) index of an element
+     * @return (StudyElement) element at the index
+     */
     public StudyElement getElement(int index) {
         if(index < getElementCount())
             return studyElements.get(index);
         return null;
     }
     
+    /**
+     * Removes an element at the index
+     * @param index (int) index of element to remove
+     */
     public void removeElement(int index) {
         if(index < this.getElementCount() && index > -1) {
             Object removedElement = this.studyElements.remove(index);
@@ -64,6 +81,10 @@ public class Study extends StudyElement{
         }
     }
 
+    /**
+     * Add element to the end of the study
+     * @param element (StudyElement) element to add
+     */
     public void addElement(StudyElement element) {
         if(element instanceof Study)
             studyElements.add(element);
@@ -73,6 +94,10 @@ public class Study extends StudyElement{
         }
     }
     
+    /**
+     * Gets the total image count of the study
+     * @return (int) number of images in the study
+     */
     public int getImageCount() {
         int counter = 0;
         for(int i = 0; i < getElementCount(); i++) {
@@ -83,6 +108,9 @@ public class Study extends StudyElement{
         return counter;
     }
     
+    /**
+     * Undos the last undoable operation
+     */
     public void undoTask() {
         if(undoStack.size() > 0) {
             int lastIndex = undoStack.size() - 1;
@@ -91,6 +119,11 @@ public class Study extends StudyElement{
         }
     }
     
+    /**
+     * Gets the reference line for given study
+     * @param study (Study) study to get reference line for.
+     * @return (ReferenceLine)
+     */
     public ReferenceLine getReferenceLineForStudy(Study study) {
         Point[] line = new Point[2];
         
@@ -165,26 +198,55 @@ public class Study extends StudyElement{
         return new ReferenceLine(line, width, height);
     }
     
+    /**
+     * Adds an undo operation to the stack
+     * @param operation (StudyUndoableOperation) operation to add
+     */
     public void addUndoTask(StudyUndoableOperation  operation) {
         undoStack.add(operation);
     }
     
+    /**
+     * Sets the selected index of a study
+     * @param index (int) the index of the current selected item
+     */
     public void setSelectedIndex(int index) {
         selectedIndex = index;
+        
+        //Notify listeners
+       for ( AnalysisListener a : analysisListeners ) {
+                a.update(this);
+       }
     }
     
+    /**
+     * Gets the index of the current selected item
+     * @return 
+     */
     public int getSelectedIndex() {
         return selectedIndex;
     }
     
+    /**
+     * Gets the current display mode
+     * @return (int) display mode constant
+     */
     public int getDisplayMode() {
         return displayMode;
     }
     
+    /**
+     * Set the current display mode of the study
+     * @param displayMode (int) Display mode constant
+     */
     public void setDisplayMode(int displayMode) {
         this.displayMode = displayMode;
     }
     
+    /**
+     * Get the 3D render for the current study
+     * @return 3d array x, y, z
+     */
     public int[][][] getRender() {
         if(render == null) {
             render = ImageReconUtils.generate3D(this);
@@ -192,6 +254,10 @@ public class Study extends StudyElement{
         return render;
     }
     
+    /**
+     * Set the render of the study
+     * @param render 3d int array x, y, z
+     */
     public void setRender(int[][][] render) {
         this.render = render;
     }
@@ -200,6 +266,7 @@ public class Study extends StudyElement{
         return this.name;
     }
     
+    //Display mode constants
     public static final int DISPLAY_MODE_1x1 = 1;
     public static final int DISPLAY_MODE_2x2 = 2;
     public static final int DISPLAY_MODE_RECON = 3;

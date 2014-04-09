@@ -20,12 +20,16 @@ import medicalimaging.imageTypes.StandardImage;
 import medicalimaging.model.Study;
 import medicalimaging.model.StudyElement;
 /**
- * Handles all interaction for saving, loading, and coping a study
+ * Handles all interaction for saving, loading, and coping a study from the disk
  * @author ericlee
  */
 public class LocalStudyLoader implements StudyLoader{
     protected String loadPath; 
     
+    /**
+     * Constructor
+     * @param loadPath the path on the disk to a study. Must be a directory. 
+     */
     public LocalStudyLoader(String loadPath) {
         this.loadPath = loadPath;
     }
@@ -99,8 +103,8 @@ public class LocalStudyLoader implements StudyLoader{
     
     /**
      * Copies a given study to the given path
-     * @param copyStudy
-     * @param copyPath
+     * @param copyStudy study to copy
+     * @param copyPath path to copy to
      * @return 
      */
     public boolean copyStudy(Study copyStudy, String copyPath){

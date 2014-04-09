@@ -7,9 +7,9 @@
 package medicalimaging.model;
 
 /**
- *
+ * Class for all members of the study composite
  * @author ericlee
  */
-public class StudyElement implements java.io.Serializable{
+public abstract class StudyElement implements java.io.Serializable{
     
 }

@@ -9,13 +9,18 @@ package medicalimaging.studyLoaders;
 import medicalimaging.model.Study;
 
 /**
- *
+ * Class for handling reconstructed studies.
  * @author ericlee
  */
 public abstract class ReconStudyLoader implements StudyLoader{
     protected String studyName;
     protected int[][][] render;
     
+    /**
+     * Constructor
+     * @param _studyName The desired name of a study
+     * @param _render The 3D render of a study
+     */
     public ReconStudyLoader(String _studyName, int[][][] _render) {
         studyName = _studyName;
         render = _render;

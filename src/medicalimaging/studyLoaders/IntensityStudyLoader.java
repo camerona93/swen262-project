@@ -8,7 +8,6 @@ package medicalimaging.studyLoaders;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import medicalimaging.imageTypes.MedicalImage;
 import medicalimaging.imageTypes.PreLoadedImage;
@@ -16,7 +15,7 @@ import medicalimaging.model.ImageReconUtils;
 import medicalimaging.model.Study;
 
 /**
- *
+ * Loads a study with images manipulated to window bounds.
  * @author ericlee
  */
 public class IntensityStudyLoader implements StudyLoader{
@@ -26,6 +25,13 @@ public class IntensityStudyLoader implements StudyLoader{
     private Study study;
     private String studyName;
     
+    /**
+     * Constructor
+     * @param study Base Study to window images
+     * @param studyName Name for generated study
+     * @param lowValue Low window value
+     * @param highValue High window value
+     */
     public IntensityStudyLoader(Study study, String studyName, int lowValue, int highValue) {
         this.study = study;
         this.studyName = studyName;
@@ -34,6 +40,10 @@ public class IntensityStudyLoader implements StudyLoader{
     }
     
     @Override
+    /**
+     * Loads the study
+     * @return Study the generated study.
+     */
     public Study execute() {
         Study returnStudy = new Study(studyName);
         
@@ -52,19 +62,37 @@ public class IntensityStudyLoader implements StudyLoader{
     }
 
     @Override
+    /**
+     * Saves the given study. No functionality. 
+     */
     public void save(Study saveStudy) {
         
     }
 
+    /**
+     * Copys the study.
+     * No functionality.
+     * @param copyStudy
+     * @param copyPath
+     * @return 
+     */
     @Override
     public boolean copyStudy(Study copyStudy, String copyPath) {
         return true;
     }
     
+    /**
+     * Gets the low window color value(0-255) for the generated study
+     * @return int color value 
+     */
     public int getLowVal() {
         return low.getBlue();
     }
     
+    /**
+     * Gets the high window color value(0-255) for generated study.
+     * @return 
+     */
     public int getHighVal() {
         return high.getBlue();
     }

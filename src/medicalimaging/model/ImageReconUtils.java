@@ -14,10 +14,16 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 /**
- *
+ * Utility class for image reconstruction
  * @author ericlee
  */
 public class ImageReconUtils {
+    
+    /**
+     * Generate a 3D model of a study
+     * @param study (Study) study to generate the 3D model from
+     * @return (int[][][]) x, y, z
+     */
     public static int[][][] generate3D(Study study) {
         int imageCount = study.getImageCount();
         int height = 0;
@@ -41,6 +47,11 @@ public class ImageReconUtils {
         return reconImage;
     }
     
+    /**
+     * Creates a buffered image from a standard Image
+     * @param image (Image) image to convert
+     * @return (BufferedImage) bufferedImage of the original image
+     */
     public static BufferedImage getBufferedImageFromImage(Image image) {
         BufferedImage bfImage = new BufferedImage(image.getHeight(null), image.getWidth(null), BufferedImage.TYPE_INT_ARGB);
             
@@ -51,6 +62,13 @@ public class ImageReconUtils {
         return bfImage;
     }
     
+    /**
+     * Applies the windowing effect to a given image
+     * @param image (Image) image to apply the effect to
+     * @param low (int) 0 - 255 low window value
+     * @param high (int) 0 - 255 hight window value
+     * @return 
+     */
     public static Image windowImage(Image image, int low, int high) {
         BufferedImage bfImage = ImageReconUtils.getBufferedImageFromImage(image);
             BufferedImage outputImage = new BufferedImage(bfImage.getWidth(null), bfImage.getWidth(null), BufferedImage.TYPE_INT_ARGB);
@@ -72,6 +90,12 @@ public class ImageReconUtils {
             return outputImage;
     }
     
+    /**
+     * Calculates the cross product of two xyz equations
+     * @param a
+     * @param b
+     * @return (int[]) xyz vector
+     */
     public static int[] calcCrossProduct(int[] a, int[] b) {
         int[] returnVector = new int[3];
         
@@ -83,7 +107,7 @@ public class ImageReconUtils {
     }
     
     /**
-     * 
+     * Solves a system of equations (NOT USED)
      * @param e1 index order a, b, c, d
      * @param e2
      * @return 
@@ -164,6 +188,14 @@ public class ImageReconUtils {
         return(sum); 
     }
     
+    /**
+     * If the value falls between high and low this function generates the linear
+     * representation.
+     * @param color (int) 0-255 color value to scale
+     * @param low (int) 0-255 low window value
+     * @param high (int) 0-255 high window value
+     * @return 
+     */
     private static int generateWindowedScaledColor(int color, int low, int high) {
         double slope = 255.0 / (double)(high - low);
         int returnValue =  (int)(slope * (color - low));

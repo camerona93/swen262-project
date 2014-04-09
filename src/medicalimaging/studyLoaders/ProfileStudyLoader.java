@@ -13,11 +13,16 @@ import medicalimaging.imageTypes.PreLoadedImage;
 import medicalimaging.model.Study;
 
 /**
- *
+ * A studyloader that loads a study with image progression along the x-axis
  * @author ericlee
  */
 public class ProfileStudyLoader extends ReconStudyLoader{
 
+    /**
+     * Constructor
+     * @param _studyName desired study name
+     * @param render 3D render of a study
+     */
     public ProfileStudyLoader(String _studyName, int[][][] render) {
         super(_studyName, render);
     }

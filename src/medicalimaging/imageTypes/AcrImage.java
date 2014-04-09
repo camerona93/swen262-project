@@ -14,16 +14,24 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.swing.ImageIcon;
 
 /**
- *
+ * Loads an ACR image from the disk
  * @author ericlee
  */
 public class AcrImage extends MedicalImage{
     public static final int HEADER_OFFSET = 0x2000;
     
+    /**
+     * Constructor
+     * @param imagePath (String) path to image 
+     */
     public AcrImage(String imagePath) {
         this.imagePath = imagePath;
     }
     
+    /**
+     * Loads the image from disk
+     * @return (ImageIcon) icon representation of the image
+     */
     public ImageIcon loadImage() {
         FileImageInputStream imageFile = null;
 	try {

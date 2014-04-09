@@ -54,24 +54,25 @@ public class MainFrame extends javax.swing.JFrame implements TreeSelectionListen
         keysPressed = new int[5];
     }
     
+    /**
+     * Sets the tree model of the JTree
+     * @param model (TreeModel) mode to set
+     */
     protected void setTreeModel(TreeModel model) {
         studyTree.setModel(model);
     }
     
+    /**
+     * Refresh the images of the MedicalImagePanel
+     */
     protected void refreshImages() {
         this.valueChanged(null);
     }
     
     /**
-     * Removes all images from the image JPanel
+     * Detects a mouse wheel even
+     * @param e 
      */
-    private void clearImagePanel() {
-        Component[] components = this.imagePanel.getComponents();
-        for(Component curComponent : components) {
-            this.imagePanel.remove(curComponent);
-        }
-    }
-    
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         int mouseX = e.getX();

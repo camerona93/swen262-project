@@ -27,7 +27,7 @@ import medicalimaging.model.StudyTreeModel;
 import medicalimaging.model.WindowBoundsStudyUndoableOperation;
 
 /**
- *
+ * Controller for main window of the application
  * @author ericlee
  */
 public class MainFrameController implements MainFrameViewProtocol, MedicalImageViewProtocol{
@@ -54,10 +54,12 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         view.imagePanel.addSelectionListener(this);
     }
 
+    //---------MainFrameProtocol Methods
     @Override
     public void loadStudyButtonPressed() {
         loadStudy();
     }
+
 
     @Override
     public void copyButtonPressed() {
@@ -105,10 +107,6 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
             view.updateGUIForState(currentStudy.getDisplayMode());
             view.imagePanel.loadImages(this.getImagesForStudy(currentStudy), lines);
             
-            //Notify listeners
-            for ( AnalysisListener a : currentStudy.analysisListeners ) {
-                a.update(currentStudy);
-            }
         }
     }
     
@@ -155,48 +153,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         else
             selectPreviousElement();
     }    
-        
-    /**
-     * Selects the first element of a given study
-     * @param parent
-     * @return 
-     */
-    private Object selectFirstElement(Study parent) {
-        int parentStartIndex = treeModel.getRowOfElement(parent, (Study)treeModel.getRoot());
-        if(parentStartIndex >= 0) {
-            for(int i = 0; i < parent.getElementCount(); i++) {
-                StudyElement currentElement = parent.getElement(i);
-                if(treeModel.isLeaf(currentElement)) {
-                    TreePath firstPath = view.studyTree.getPathForRow(parentStartIndex + i + 1);
-                    view.studyTree.setSelectionPath(firstPath);
-                    return view.studyTree.getLastSelectedPathComponent();
-                }
-            }
-        }
-        return null;
-    }
     
     @Override
     public void undoButtonPressed() {
         Study currentStudy = getCurrentStudy();
         currentStudy.undoTask();
-    }
-    
-    private Object selectCurrentStudySavedIndex() {
-        Study currentStudy = getCurrentStudy();
-        Object selectedElement;
-        if(currentStudy.getSelectedIndex() == -1) {
-               selectedElement = this.selectFirstElement(currentStudy);
-               Object parent = treeModel.getParent((StudyElement) selectedElement, currentStudy);
-               currentStudy.setSelectedIndex(treeModel.getIndexOfChild(parent, selectedElement));
-        }
-        else {
-               selectedElement = treeModel.getChild(currentStudy, currentStudy.getSelectedIndex());
-               int selectedRow = treeModel.getRowOfElement(selectedElement, (Study)treeModel.getRoot());
-               TreePath selectedImagePath = view.studyTree.getPathForRow(selectedRow);
-               view.studyTree.setSelectionPath(selectedImagePath);
-        }
-        return selectedElement;
     }
     
     public void displayModeChanged(int displayMode) {
@@ -231,12 +192,15 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         }
     }
     
+    //---------End MainFrameProtocol Methods
+    
     @Override
     public void rectDeselected() {
         view.refreshImages();
     }
     
-     @Override
+    //----------MedicalImageViewProtocol Methods
+    @Override
     public void rectSelected(int image, Rectangle2D rect) {
         Study currentStudy = getCurrentStudy();
         if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_RECON) {
@@ -257,6 +221,49 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     }
     
     /**
+     * Selects the first element of a given study
+     * @param parent
+     * @return 
+     */
+    private Object selectFirstElement(Study parent) {
+        int parentStartIndex = treeModel.getRowOfElement(parent, (Study)treeModel.getRoot());
+        if(parentStartIndex >= 0) {
+            for(int i = 0; i < parent.getElementCount(); i++) {
+                StudyElement currentElement = parent.getElement(i);
+                if(treeModel.isLeaf(currentElement)) {
+                    TreePath firstPath = view.studyTree.getPathForRow(parentStartIndex + i + 1);
+                    view.studyTree.setSelectionPath(firstPath);
+                    return view.studyTree.getLastSelectedPathComponent();
+                }
+            }
+        }
+        return null;
+    }
+    //---------End MedicalImageViewProtocol Methods
+    
+    
+    /**
+     * Selects the current study's saved index
+     * @return (StudyElement) selected element
+     */
+    private Object selectCurrentStudySavedIndex() {
+        Study currentStudy = getCurrentStudy();
+        Object selectedElement;
+        if(currentStudy.getSelectedIndex() == -1) {
+               selectedElement = this.selectFirstElement(currentStudy);
+               Object parent = treeModel.getParent((StudyElement) selectedElement, currentStudy);
+               currentStudy.setSelectedIndex(treeModel.getIndexOfChild(parent, selectedElement));
+        }
+        else {
+               selectedElement = treeModel.getChild(currentStudy, currentStudy.getSelectedIndex());
+               int selectedRow = treeModel.getRowOfElement(selectedElement, (Study)treeModel.getRoot());
+               TreePath selectedImagePath = view.studyTree.getPathForRow(selectedRow);
+               view.studyTree.setSelectionPath(selectedImagePath);
+        }
+        return selectedElement;
+    }
+    
+    /**
      * Saves all the studies loaded within the frame
      */
     private void saveStudy() {
@@ -264,6 +271,9 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         rootStudy.studyLoader.save(rootStudy);
     }
     
+    /**
+     * Copies the current study.
+     */
     private void copyCurrentStudy() {
         Study currentStudy = getCurrentStudy();
         if(currentStudy.studyLoader != null) {
@@ -317,6 +327,12 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         //Update view
     }
     
+    /**
+     * Generates a window study on given study
+     * @param study (Study) study to perform the windowing operation on
+     * @param low (int) low window value
+     * @param high (int) high window value
+     */
     private void generateWindowStudy(Study study, int low, int high) {
         WindowBoundsStudyUndoableOperation operation;
         operation = new WindowBoundsStudyUndoableOperation(study, high, low) {
@@ -371,6 +387,13 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return (Study)treeModel.getRoot();
     }
     
+    /**
+     * Gets the window values via a JOptionPane
+     * @param defaultLow (int) default low window value
+     * @param defaultHight (int) default high window value
+     * @param sampleImage (Image) image to provide a sample of the windowing operation
+     * @return 
+     */
     private int[] getWindowValues(int defaultLow, int defaultHight, Image sampleImage) {
         int[] values = new int[]{-1, -1};
         WindowValuesPanel panel = new WindowValuesPanel(sampleImage, 0, 0);
@@ -393,6 +416,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return values;
     }
     
+    /**
+     * Gets the images for a 2x2 display mode
+     * @param currentStudy (Study) study to get the image from
+     * @return (ArrayList<MedicalImage>) Images for mode
+     */
     private ArrayList<MedicalImage> getImagesFor2x2DisplayMode(Study currentStudy) {
         int childCount = currentStudy.getImageCount();
         int selectedIndex = currentStudy.getSelectedIndex();
@@ -417,6 +445,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return loadImages;
     }
     
+    /**
+     * Gets image for the reconstructed display mode 
+     * @param currentStudy (Study) study to get the images from
+     * @return 
+     */
     private ArrayList<MedicalImage> getImagesForReconDisplayMode(Study currentStudy) {
         ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
         ArrayList<Study> reconStudies = currentStudy.reconStudies;
@@ -429,6 +462,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return loadImages;
     }
     
+    /**
+     * Gets the reference lines for a given study
+     * @param currentStudy (Study) study to get reference lines for
+     * @return 
+     */
     private ArrayList<ArrayList<ReferenceLine>> getReferenceLinesForStudy(Study currentStudy) {
         ArrayList<ArrayList<ReferenceLine>> lines = new ArrayList<ArrayList<ReferenceLine>>();
         for(int i = 0; i <= currentStudy.reconStudies.size(); i++) {
@@ -452,6 +490,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return lines;
     }
     
+    /**
+     * Gets the images for a given study and display mode
+     * @param currentStudy (Study) study to get images from
+     * @return (ArrayList<MedicalImage>) images
+     */
     private ArrayList<MedicalImage> getImagesForStudy(Study currentStudy) {
         ArrayList<MedicalImage> loadImages = new ArrayList<MedicalImage>();
         if(currentStudy.getDisplayMode() == Study.DISPLAY_MODE_1x1) {
@@ -470,6 +513,11 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         return loadImages;
     }
     
+    /**
+     * Gets the selection rects for a given study and display mode
+     * @param currentStudy (Study) study to get rects from
+     * @return 
+     */
     private ArrayList<ArrayList<Rectangle2D>> getSelectionsRectsForStudy(Study currentStudy) {
         ArrayList<ArrayList<Rectangle2D>> rects = new ArrayList<ArrayList<Rectangle2D>>();
         
