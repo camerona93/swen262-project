@@ -24,7 +24,6 @@ import medicalimaging.model.ReferenceLine;
 import medicalimaging.model.Study;
 import medicalimaging.model.StudyElement;
 import medicalimaging.model.StudyTreeModel;
-import medicalimaging.model.StudyUndoableOperation;
 import medicalimaging.model.WindowBoundsStudyUndoableOperation;
 
 /**
@@ -34,7 +33,6 @@ import medicalimaging.model.WindowBoundsStudyUndoableOperation;
 public class MainFrameController implements MainFrameViewProtocol, MedicalImageViewProtocol{
     private StudyTreeModel treeModel;
     private JFileChooser fileChooser = new JFileChooser();
-    private ArrayList<StudyUndoableOperation> operationStack = new ArrayList<StudyUndoableOperation>();
     private MainFrame view;
     
     public MainFrameController() {

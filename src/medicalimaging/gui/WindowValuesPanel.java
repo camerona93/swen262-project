@@ -28,7 +28,7 @@ public class WindowValuesPanel extends JPanel implements DocumentListener{
     private int defaultHigh;
     private Image sampleImage;
     
-     //Swing components
+    //Swing components
     public JTextField lowValueTextField;
     public JTextField highValueTextField;
     private JLabel sampleImageLabel;

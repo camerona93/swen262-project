@@ -7,7 +7,6 @@
 package medicalimaging;
 
 import medicalimaging.gui.MainFrameController;
-import medicalimaging.model.ImageReconUtils;
 
 /**
  *
@@ -20,16 +19,6 @@ public class MedicalImaging {
      */
     public static void main(String[] args) {        
         MainFrameController controller = new MainFrameController();
-        
-        int[] e1 = {2, 3, 1, 2};
-        int[] e2 = {-1, 2, 3, -1};
-        int[] e3 = {-3, -3, 1, 0};
-        
-        int[] solution = ImageReconUtils.solveSystemEquations(e1, e2);
-        
-        for(int i = 0; i < solution.length; i++) {
-            System.out.println(solution[i]);
-        }
     }
     
 }
