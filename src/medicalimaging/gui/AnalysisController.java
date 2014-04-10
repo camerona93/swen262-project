@@ -20,36 +20,44 @@ import medicalimaging.model.AnalysisListener;
 import medicalimaging.model.Study;
 
 /**
- *
+ * Controller for the Histogram analysis window
  * @author Cameron
  */
 public class AnalysisController implements AnalysisListener, WindowListener {
     private AnalysisFrame frame;
     private Rectangle2D rect;
-    private Study study;
     private MedicalImageViewProtocol delegate;
     
+    
+    /** Generates a new analysis. Spawns a new AnalysisFrame.
+     * 
+     * @param astudy - Study to analyze
+     * @param arect - rectangle defining the bounds of the selected image.
+     * @param adelegate - the delegate to notify when the window is closed.
+     */
     @Override
     public void newAnalysis(Study astudy, Rectangle2D arect, MedicalImageViewProtocol adelegate) {
         frame = new AnalysisFrame();
         frame.addWindowListener(this);
-        study = astudy;
         rect = arect;
         delegate = adelegate;
 
-        update(study);
+        update(astudy);
         
         frame.setAlwaysOnTop(true);
         frame.setVisible(true);
         
     }
     
+    /** The update method updates the histogram based on the study passed.
+     * 
+     * @param astudy 
+     */
     @Override
     public void update(Study astudy) {
-        study = astudy;
         AdaptiveHistogram h = new AdaptiveHistogram();
         float average = 0;
-        int[] pixels = getPixelsInRect(toBufferedImage(((MedicalImage)(study.getElement(study.getSelectedIndex()))).loadImage().getImage()), rect);
+        int[] pixels = getPixelsInRect(toBufferedImage(((MedicalImage)(astudy.getElement(astudy.getSelectedIndex()))).loadImage().getImage()), rect);
         for (int a : pixels ) {
             average += a;
             h.addValue(a);
@@ -61,6 +69,12 @@ public class AnalysisController implements AnalysisListener, WindowListener {
         frame.setHistogram(h.internalMap, average);
     }
     
+    /** Returns an array of pixels in a specified rectangle of an image.
+     * 
+     * @param img   - image to grab pixels from
+     * @param rect  - bounding box
+     * @return int[] pixels - list of pixels
+     */
     private static int[] getPixelsInRect (BufferedImage img, Rectangle2D rect) {
         ArrayList<Integer> pixelAL = new ArrayList<>();
         
@@ -80,6 +94,11 @@ public class AnalysisController implements AnalysisListener, WindowListener {
         return pixels;
     }
     
+    /** Helper class to convert an Image object to a BufferedImage
+     * 
+     * @param img
+     * @return BufferedImage
+     */
     private static BufferedImage toBufferedImage(Image img) {
         if (img instanceof BufferedImage) {
             return (BufferedImage) img;
@@ -103,11 +122,12 @@ public class AnalysisController implements AnalysisListener, WindowListener {
     @Override
     public void windowClosing(WindowEvent e) {    }
 
+    /** 
+     * The windowClosed event needs to notify the MainFrameController that it has been closed
+     */
     @Override
     public void windowClosed(WindowEvent e) {
-        study.selectionRects.remove(rect);
-        study.analysisListeners.remove(this);
-        delegate.rectDeselected();
+        delegate.analysisWindowClosed(rect, this);
     }
 
     @Override

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
+import medicalimaging.model.AnalysisListener;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
 import medicalimaging.model.ReferenceLine;
 import medicalimaging.model.Study;
@@ -196,7 +197,9 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     //---------End MainFrameProtocol Methods
     
     @Override
-    public void rectDeselected() {
+    public void analysisWindowClosed(Rectangle2D rect, AnalysisListener a) {
+        getCurrentStudy().selectionRects.remove(rect);
+        getCurrentStudy().analysisListeners.remove(a);
         view.refreshImages();
     }
     

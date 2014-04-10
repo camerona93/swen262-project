@@ -8,18 +8,16 @@ package medicalimaging.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import medicalimaging.histogramLibrary.Cell;
 
 /**
  *
  * @author Cameron
  */
 public class HistogramView extends javax.swing.JPanel {
-    
     public HashMap<String, Integer> histogram;
+    
     /*
      * Creates new form AnalysisView
      */
@@ -27,12 +25,20 @@ public class HistogramView extends javax.swing.JPanel {
         initComponents();
         histogram = new HashMap<>();
     }
-
+    
+    /**
+     * Sets the histogram for the view and repaints.
+     * @param h 
+     */
     public void setHistogram(HashMap<String, Integer> h) {
         histogram = h;
         this.repaint();
     }
     
+    /**
+     * Overriding paintComponent. This is where the histogram bar graph is drawn.
+     * @param g 
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

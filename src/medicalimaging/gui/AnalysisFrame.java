@@ -6,12 +6,7 @@
 
 package medicalimaging.gui;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.HashMap;
-import medicalimaging.histogramLibrary.Cell;
 
 
 
@@ -32,6 +27,11 @@ public class AnalysisFrame extends javax.swing.JFrame {
         this.histogramPanel.add(histogramView);
     }
     
+    /**
+     * Sets the histogram for the histogram view and displays the average.
+     * @param h
+     * @param average 
+     */
     public void setHistogram(HashMap<String, Integer> h, float average) {
         histogramView.setHistogram(h);
         intensityLabel.setText("" + average);

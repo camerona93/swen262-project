@@ -7,6 +7,7 @@
 package medicalimaging.gui;
 
 import java.awt.geom.Rectangle2D;
+import medicalimaging.model.AnalysisListener;
 
 /**
  * Protocol for listeners of the image view
@@ -22,7 +23,7 @@ public interface MedicalImageViewProtocol {
     public void rectSelected(int image, Rectangle2D rect);
     
     /**
-     * Called when a rectangle is deselected
+     * Called when an analysis window is closed.
      */
-    public void rectDeselected();
+    public void analysisWindowClosed(Rectangle2D rect, AnalysisListener a);
 }
