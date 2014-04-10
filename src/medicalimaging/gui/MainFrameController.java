@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreePath;
-import medicalimaging.model.AnalysisListener;
 import medicalimaging.model.DisplayModeStudyUndoableOperation;
 import medicalimaging.model.ReferenceLine;
 import medicalimaging.model.Study;
@@ -80,7 +79,9 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
     public void selectedImageChanged(StudyElement selectedElement) {
         Study currentStudy = getCurrentStudy();
         
-        if(selectedElement instanceof Study) {
+        if(currentStudy.getImageCount() == 0)
+            view.studyTree.clearSelection();
+        else if(selectedElement instanceof Study) {
             this.selectFirstElement(currentStudy);
         }
         else {
@@ -370,7 +371,7 @@ public class MainFrameController implements MainFrameViewProtocol, MedicalImageV
         int rowCount = view.studyTree.getRowCount();
         if(selectedRow.length == 0)
             this.selectFirstElement(getCurrentStudy());
-        else if(selectedRow[0] < rowCount) {
+        else if(selectedRow[0] < rowCount - 1) {
             TreePath selectionPath = view.studyTree.getPathForRow(++selectedRow[0]);
             view.studyTree.setSelectionPath(selectionPath);
         }
