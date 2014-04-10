@@ -32,7 +32,7 @@ public abstract class WindowBoundsStudyUndoableOperation extends StudyUndoableOp
         
         if(study.windowStudy != null) {
             prevHigh = ((IntensityStudyLoader)study.windowStudy.studyLoader).getHighVal();
-            prevLow = ((IntensityStudyLoader)study.windowStudy.studyLoader).getHighVal();
+            prevLow = ((IntensityStudyLoader)study.windowStudy.studyLoader).getLowVal();
         }
         else {
             prevHigh = newHigh;
